@@ -7,15 +7,41 @@ import java.util.List;
 public class UserManager {
 
     // 1. REGISTER THE USER (Your existing code)
-    public void registerUser(User newUser) {
+    // 0. CHECK IF USER EXISTS
+    public boolean userExists(String username) {
+        try {
+            FileReader file = new FileReader("users.txt");
+            BufferedReader reader = new BufferedReader(file);
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                if (parts.length >= 1 && parts[0].equals(username)) {
+                    reader.close();
+                    return true;
+                }
+            }
+            reader.close();
+        } catch (IOException e) {
+            // File might not exist yet, which is fine
+        }
+        return false;
+    }
+
+    // 1. REGISTER THE USER
+    public boolean registerUser(User newUser) {
+        if (userExists(newUser.getUsername())) {
+            return false; // Username is already taken!
+        }
         try {
             FileWriter file = new FileWriter("users.txt", true);
             BufferedWriter writer = new BufferedWriter(file);
             writer.write(newUser.getUsername() + "," + newUser.getPassword() + "," + newUser.getRole());
             writer.newLine();
             writer.close();
+            return true;
         } catch (IOException error) {
             System.out.println("Oops! Could not save the user.");
+            return false;
         }
     }
 

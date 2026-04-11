@@ -23,9 +23,13 @@ public class RegisterServlet extends HttpServlet {
         User newUser = new User(user, pass, badge);
 
         // Save them to the text file!
-        manager.registerUser(newUser);
+        boolean success = manager.registerUser(newUser);
 
-        // 3. Send the user back to the login page so they can test their new account
-        response.sendRedirect("login.jsp");
+        if (success) {
+            // 3. Send the user back to the login page so they can test their new account
+            response.sendRedirect("login.jsp");
+        } else {
+            response.sendRedirect("register.jsp?error=exists");
+        }
     }
 }

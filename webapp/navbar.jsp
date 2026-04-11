@@ -31,7 +31,8 @@
     { name: 'Appointments', link: 'manage_appointments.jsp' },
     { name: 'Billing', link: 'billing_dashboard.jsp' }, // <-- NEW BILLING DOOR ADDED HERE!
     { name: 'Manage Users', link: 'manage-users.jsp' },
-    { name: 'Manage Vehicle', link: 'manage-vehicle.jsp' }
+    { name: 'Manage Vehicle', link: 'manage-vehicle.jsp' },
+    { name: 'Feedback', link: 'admin_feedback.jsp' }
   ];
 
   const desktopMenu = document.getElementById('desktop-menu');
