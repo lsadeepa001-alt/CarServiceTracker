@@ -20,7 +20,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style> body { background: #f8fafc; } </style>
 </head>
-<body class="antialiased flex flex-col items-center justify-center min-h-screen py-10 px-4">
+<body class="antialiased flex flex-col items-center justify-center min-h-screen py-10 px-4 pt-24">
+    <%@ include file="customer_navbar.jsp" %>
 
     <div class="max-w-lg w-full">
         <div class="mb-6 text-center">

@@ -20,7 +20,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style> body { background: #f9fafc; } </style>
 </head>
-<body class="antialiased text-gray-900">
+<body class="antialiased text-gray-900 pt-24">
 
 <div class="max-w-7xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
 

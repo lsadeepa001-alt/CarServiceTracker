@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style> body { background: #f0fdf4; /* A soft, clean background */ } </style>
 </head>
-<body class="antialiased min-h-screen flex flex-col justify-center items-center py-12 sm:px-6 lg:px-8">
+<body class="antialiased min-h-screen flex flex-col justify-center items-center py-12 sm:px-6 lg:px-8 pt-24">
 
     <div class="sm:mx-auto sm:w-full sm:max-w-md">
         <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">

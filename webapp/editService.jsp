@@ -21,7 +21,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style> body { background-color: #f9fafc; } </style>
 </head>
-<body class="bg-gradient-to-br from-slate-50 to-gray-100 antialiased min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+<body class="bg-gradient-to-br from-slate-50 to-gray-100 antialiased min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8 pt-24">
 
     <div class="sm:mx-auto sm:w-full sm:max-w-md">
         <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">Edit Service Record</h2>

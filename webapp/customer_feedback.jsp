@@ -16,20 +16,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
-<body class="bg-slate-50 antialiased">
-    <nav class="bg-indigo-600 shadow-md">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-16">
-                <div class="flex items-center">
-                    <span class="text-white font-bold text-xl tracking-wider">SwiftDrive Services</span>
-                </div>
-                <div class="flex items-center gap-4">
-                    <a href="customer_dashboard.jsp" class="text-indigo-100 hover:text-white text-sm font-medium transition"><i class="fa-solid fa-arrow-left"></i> Back to Dashboard</a>
-                    <a href="LogoutServlet" onclick="confirmLogout(event)" class="text-white hover:bg-indigo-700 px-3 py-2 rounded-md text-sm font-medium transition">Sign Out</a>
-                </div>
-            </div>
-        </div>
-    </nav>
+<body class="bg-slate-50 antialiased pt-16">
+    <%@ include file="customer_navbar.jsp" %>
 
     <div class="max-w-4xl mx-auto py-10 px-4">
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 mb-8">

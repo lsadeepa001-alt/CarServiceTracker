@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style> body { background: #f9fafc; } </style>
 </head>
-<body class="bg-gradient-to-br from-slate-50 to-gray-100 antialiased">
+<body class="bg-gradient-to-br from-slate-50 to-gray-100 antialiased pt-16">
 
     <div class="container mx-auto px-4 py-10 max-w-7xl">
         <div class="bg-white/90 backdrop-blur-sm shadow-2xl rounded-2xl border border-white/30 p-8">

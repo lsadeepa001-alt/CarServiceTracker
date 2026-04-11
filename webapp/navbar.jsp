@@ -1,4 +1,4 @@
-<nav class="bg-blue-600 shadow-md">
+<nav class="bg-blue-600 shadow-md fixed top-0 w-full z-50">
   <div class="max-w-7xl mx-auto px-4 py-2 flex items-center justify-between">
     <div class="flex items-center space-x-4">
       <button id="mobile-menu-btn" class="text-white md:hidden focus:outline-none hover:text-gray-200">
