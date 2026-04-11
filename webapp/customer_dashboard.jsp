@@ -29,7 +29,7 @@
                 </div>
                 <div class="flex items-center gap-4">
                     <a href="customer_feedback.jsp" class="text-indigo-100 bg-indigo-700 hover:bg-indigo-800 px-3 py-2 rounded-md text-sm font-medium transition shadow-inner"><i class="fa-solid fa-comment-dots mr-1"></i> Feedback</a>                    <span class="text-indigo-200 text-sm hidden sm:inline ml-2 border-l border-indigo-400 pl-4">Customer Portal</span>
-                    <a href="LogoutServlet" class="text-white hover:bg-indigo-700 px-3 py-2 rounded-md text-sm font-medium transition">Sign Out</a>
+                    <a href="LogoutServlet" onclick="confirmLogout(event)" class="text-white hover:bg-indigo-700 px-3 py-2 rounded-md text-sm font-medium transition">Sign Out</a>
                 </div>
             </div>
         </div>
@@ -214,5 +214,6 @@
 
         </div>
     </div>
+<%@ include file="logout_script.jsp" %>
 </body>
 </html>

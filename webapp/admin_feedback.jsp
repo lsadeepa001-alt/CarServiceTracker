@@ -33,12 +33,7 @@
                 </div>
             </div>
 
-            <% if ("true".equals(request.getParameter("success"))) { %>
-                <div class="mb-6 bg-teal-50 border-l-4 border-teal-500 p-4 rounded-r shadow-sm flex items-center">
-                    <i class="fa-solid fa-paper-plane text-teal-500 mr-3"></i>
-                    <p class="text-sm text-teal-800 font-medium">Reply posted successfully!</p>
-                </div>
-            <% } %>
+
 
             <div class="space-y-6">
                 <%
@@ -102,5 +97,13 @@
             </div>
         </div>
     </div>
+<%@ include file="toast.jsp" %>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        <% if ("true".equals(request.getParameter("success"))) { %>
+            showToast("Reply posted successfully!", "success");
+        <% } %>
+    });
+</script>
 </body>
 </html>

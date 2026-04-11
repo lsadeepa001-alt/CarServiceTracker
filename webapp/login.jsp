@@ -95,5 +95,15 @@
             </form>
         </div>
     </div>
+<%@ include file="toast.jsp" %>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        <% if ("invalid".equals(request.getParameter("error"))) { %>
+            showToast("Invalid username or password. Please try again.", "error");
+        <% } else if ("logout".equals(request.getParameter("success"))) { %>
+            showToast("You have successfully logged out.", "success");
+        <% } %>
+    });
+</script>
 </body>
 </html>

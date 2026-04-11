@@ -12,9 +12,7 @@
     <div id="desktop-menu" class="hidden md:flex space-x-3">
       </div>
 
-    <div class="flex items-center">
-      <a href="index.jsp" class="text-white bg-red-500 py-2 px-3 rounded-full hover:bg-red-600 transition-colors duration-300">Logout</a>
-    </div>
+      <a href="LogoutServlet" onclick="confirmLogout(event)" class="text-white bg-red-500 py-2 px-3 rounded-full hover:bg-red-600 transition-colors duration-300">Logout</a>
   </div>
 
   <div id="mobile-menu" class="hidden bg-blue-700 px-4 py-3 shadow-inner md:hidden">
@@ -87,3 +85,4 @@
     mobileMenu.classList.add('hidden');
   });
 </script>
+<%@ include file="logout_script.jsp" %>

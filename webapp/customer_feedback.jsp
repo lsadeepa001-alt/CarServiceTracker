@@ -25,28 +25,14 @@
                 </div>
                 <div class="flex items-center gap-4">
                     <a href="customer_dashboard.jsp" class="text-indigo-100 hover:text-white text-sm font-medium transition"><i class="fa-solid fa-arrow-left"></i> Back to Dashboard</a>
-                    <a href="LogoutServlet" class="text-white hover:bg-indigo-700 px-3 py-2 rounded-md text-sm font-medium transition">Sign Out</a>
+                    <a href="LogoutServlet" onclick="confirmLogout(event)" class="text-white hover:bg-indigo-700 px-3 py-2 rounded-md text-sm font-medium transition">Sign Out</a>
                 </div>
             </div>
         </div>
     </nav>
 
     <div class="max-w-4xl mx-auto py-10 px-4">
-        
-        <% if ("true".equals(request.getParameter("success"))) { %>
-            <div class="mb-6 bg-green-50 border-l-4 border-green-500 p-4 rounded-r-md shadow-sm">
-                <div class="flex">
-                    <div class="flex-shrink-0">
-                        <i class="fa-solid fa-check-circle text-green-500"></i>
-                    </div>
-                    <div class="ml-3">
-                        <p class="text-sm text-green-700 font-medium">Thank you! Your feedback has been successfully submitted.</p>
-                    </div>
-                </div>
-            </div>
-        <% } %>
-
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 mb-8">
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 mb-8">
             <h2 class="text-3xl font-bold text-slate-800 mb-2"><i class="fa-solid fa-comments text-indigo-500 mr-2"></i> How are we doing?</h2>
             <p class="text-gray-500 mb-6">We value your opinion. Let us know about your recent service experience.</p>
             
@@ -112,5 +98,14 @@
             <% } %>
         </div>
     </div>
+<%@ include file="toast.jsp" %>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        <% if ("true".equals(request.getParameter("success"))) { %>
+            showToast("Thank you! Your feedback has been successfully submitted.", "success");
+        <% } %>
+    });
+</script>
+<%@ include file="logout_script.jsp" %>
 </body>
 </html>

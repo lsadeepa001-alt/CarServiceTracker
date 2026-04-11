@@ -44,6 +44,8 @@
                                 id="username"
                                 name="username"
                                 type="text"
+                                minlength="4"
+                                title="Username must be at least 4 characters"
                                 required
                                 class="appearance-none relative block w-full pl-2 py-3 border-2 border-gray-200 placeholder-gray-400 text-gray-900 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 sm:text-sm"
                                 placeholder="Choose a username"
@@ -58,6 +60,8 @@
                                 id="password"
                                 name="password"
                                 type="password"
+                                pattern="(?=.*\d)(?=.*[\W_]).{8,}"
+                                title="Must be at least 8 characters with 1 number and 1 special character"
                                 required
                                 class="appearance-none relative block w-full pl-2 py-3 border-2 border-gray-200 placeholder-gray-400 text-gray-900 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 sm:text-sm"
                                 placeholder="Create a strong password"
@@ -115,5 +119,13 @@
             </form>
         </div>
     </div>
+<%@ include file="toast.jsp" %>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        <% if ("exists".equals(request.getParameter("error"))) { %>
+            showToast("That username is already taken. Please choose another one.", "error");
+        <% } %>
+    });
+</script>
 </body>
 </html>

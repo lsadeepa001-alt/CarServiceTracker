@@ -11,9 +11,10 @@ public class FeedbackManager {
         try {
             FileWriter file = new FileWriter(FILE_NAME, true);
             BufferedWriter writer = new BufferedWriter(file);
-            // Replace line breaks and pipes to avoid breaking storage layout
-            String safeMsg = feedback.getMessage().replace("|", "").replace("\n", " ");
-            String safeReply = feedback.getAdminReply().replace("|", "").replace("\n", " ");
+            
+            // Encode line breaks and pipes to avoid breaking storage layout
+            String safeMsg = feedback.getMessage().replace("|", " ").replace("\r", "").replace("\n", "__NL__");
+            String safeReply = (feedback.getAdminReply() != null) ? feedback.getAdminReply().replace("|", " ").replace("\r", "").replace("\n", "__NL__") : "none";
             
             writer.write(feedback.getFeedbackId() + "|" + feedback.getCustomerUsername() + "|" + safeMsg + "|" + safeReply + "|" + feedback.getDateSubmitted());
             writer.newLine();
@@ -36,7 +37,11 @@ public class FeedbackManager {
                 // Split by pipe
                 String[] parts = line.split("\\|"); 
                 if (parts.length >= 5) {
-                    Feedback fb = new Feedback(parts[0], parts[1], parts[2], parts[3], parts[4]);
+                    // Decode line breaks back
+                    String msg = parts[2].replace("__NL__", "\n");
+                    String reply = parts[3].replace("__NL__", "\n");
+                    
+                    Feedback fb = new Feedback(parts[0], parts[1], msg, reply, parts[4]);
                     list.add(fb);
                 }
             }
@@ -57,8 +62,9 @@ public class FeedbackManager {
                 if (fb.getFeedbackId().equals(targetFeedbackId)) {
                     fb.setAdminReply(newReply);
                 }
-                String safeMsg = fb.getMessage().replace("|", "").replace("\n", " ");
-                String safeReply = fb.getAdminReply().replace("|", "").replace("\n", " ");
+                
+                String safeMsg = fb.getMessage().replace("|", " ").replace("\r", "").replace("\n", "__NL__");
+                String safeReply = (fb.getAdminReply() != null) ? fb.getAdminReply().replace("|", " ").replace("\r", "").replace("\n", "__NL__") : "none";
                 
                 writer.write(fb.getFeedbackId() + "|" + fb.getCustomerUsername() + "|" + safeMsg + "|" + safeReply + "|" + fb.getDateSubmitted());
                 writer.newLine();

@@ -24,6 +24,6 @@ public class LogoutServlet extends HttpServlet {
         }
 
         // 3. Send them safely back to the login screen
-        response.sendRedirect("login.jsp");
+        response.sendRedirect("login.jsp?success=logout");
     }
 }
