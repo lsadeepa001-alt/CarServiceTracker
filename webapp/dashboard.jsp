@@ -44,6 +44,7 @@
                             <th class="px-5 py-3.5 text-left text-sm font-semibold uppercase tracking-wider">Number Plate</th>
                             <th class="px-5 py-3.5 text-left text-sm font-semibold uppercase tracking-wider">Service Type</th>
                             <th class="px-5 py-3.5 text-left text-sm font-semibold uppercase tracking-wider">Cost (LKR)</th>
+                            <th class="px-5 py-3.5 text-left text-sm font-semibold uppercase tracking-wider">Actions</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100 bg-white">
@@ -80,6 +81,10 @@
 
                                     <td class="px-5 py-3.5 text-sm"><span class="px-2.5 py-1 bg-indigo-50 text-indigo-800 rounded-full text-xs font-medium"><%= current.data.getServiceType() %></span></td>
                                     <td class="px-5 py-3.5 text-sm font-mono">LKR <%= String.format("%,.2f", current.data.getCost()) %></td>
+                                    <td class="px-5 py-3.5 text-sm flex gap-2">
+                                        <a href="editService.jsp?date=<%= current.data.getDate() %>&plate=<%= displayPlate %>&type=<%= current.data.getServiceType() %>&cost=<%= current.data.getCost() %>" class="text-blue-600 hover:text-blue-800"><i class="fa-regular fa-pen-to-square"></i> Edit</a>
+                                        <a href="DeleteServiceServlet?date=<%= current.data.getDate() %>&type=<%= current.data.getServiceType() %>" class="text-red-600 hover:text-red-800"><i class="fa-regular fa-trash-can"></i> Delete</a>
+                                    </td>
                                 </tr>
                         <%
                                     current = current.next;
@@ -87,6 +92,13 @@
                             }
                         %>
                     </tbody>
+                </table>
+            </div>
+
+            <div class="mt-8">
+                <a href="addService.jsp" class="inline-flex items-center gap-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white px-6 py-3 rounded-xl shadow-md hover:shadow-xl transition-all duration-200 font-medium">
+                    <i class="fa-solid fa-plus"></i> Add New Service Record
+                </a>
             </div>
 
         </div>
