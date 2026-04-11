@@ -61,16 +61,6 @@
                     </svg>
                     Login
                 </a>
-                <a href="register.jsp"
-                    class="group w-full sm:w-auto px-8 py-4 bg-white/80 backdrop-blur-sm border-2 border-indigo-200 text-indigo-700 font-semibold rounded-xl hover:bg-white hover:border-indigo-300 shadow-md hover:shadow-xl transform transition-all duration-300 focus:ring-4 focus:ring-indigo-200 flex items-center justify-center gap-3 text-sm sm:text-md lg:text-lg">
-                    <svg xmlns="http://www.w3.org/2000/svg"
-                        class="h-5 w-5 text-indigo-500 group-hover:scale-110 transition-transform" fill="none"
-                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
-                    </svg>
-                    Register
-                </a>
             </div>
         </div>
     </div>
