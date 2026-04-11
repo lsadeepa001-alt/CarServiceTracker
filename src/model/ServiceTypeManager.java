@@ -15,12 +15,25 @@ public class ServiceTypeManager {
         this.serviceTypes = new ArrayList<>();
         loadFromFile();
         
-        // Auto-bootstrap default physical service nodes if database misses initialization!
-        if (serviceTypes.isEmpty()) {
-            addServiceType(new ServiceType("Standard Wash", 1500.00));
-            addServiceType(new ServiceType("Oil Change", 2500.00));
-            addServiceType(new ServiceType("Brake Replacement", 4000.00));
-            addServiceType(new ServiceType("Full Engine Tune-Up", 15000.00));
+        // Check for legacy data
+        boolean hasLegacy = false;
+        for (ServiceType st : serviceTypes) {
+            if (st.getServiceName().equals("Standard Wash")) {
+                hasLegacy = true; 
+                break;
+            }
+        }
+
+        // Auto-bootstrap default physical service nodes if database misses initialization or holds old data!
+        if (serviceTypes.isEmpty() || hasLegacy) {
+            this.serviceTypes.clear();
+            this.serviceTypes.add(new ServiceType("Standard Sedan Service", 8500.00));
+            this.serviceTypes.add(new ServiceType("SUV Heavy Duty Maintenance", 18000.00));
+            this.serviceTypes.add(new ServiceType("Hybrid System Check & Maintenance", 12500.00));
+            this.serviceTypes.add(new ServiceType("Sports Car Performance Tuning", 35000.00));
+            this.serviceTypes.add(new ServiceType("EV Powertrain Diagnostics", 22000.00));
+            this.serviceTypes.add(new ServiceType("Crossover Suspension Overhaul", 16000.00));
+            saveToFile();
         }
     }
 
