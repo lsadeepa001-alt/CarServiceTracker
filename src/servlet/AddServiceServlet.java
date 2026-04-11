@@ -1,4 +1,5 @@
-package model;
+package servlet;
+import model.*;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
