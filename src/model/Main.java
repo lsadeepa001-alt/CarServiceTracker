@@ -17,6 +17,7 @@ public class Main {
         // 3. We load the cargo into the train (Adding to the Linked List)
         myTrain.addRecord(service1);
         myTrain.addRecord(service2);
+        
         myTrain.addRecord(service3);
 
         // 4. We ask the train to show us everything inside!
