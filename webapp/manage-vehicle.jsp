@@ -29,67 +29,6 @@
         <p class="mt-2 text-sm text-gray-600">Register new vehicles and link them to their owners here.</p>
     </div>
 
-    <div class="bg-white shadow-xl rounded-2xl border border-gray-100 p-6 mb-10">
-        <h2 class="text-xl font-bold text-gray-800 mb-4">Register a New Vehicle</h2>
-
-        <form action="AddVehicleServlet" method="POST" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-
-            <div>
-                <label class="block text-sm font-semibold text-gray-700">License Plate (ID)</label>
-                <input type="text" name="licensePlate" placeholder="e.g. CAA-1234" required class="mt-1 w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-            </div>
-
-            <div>
-                <label class="block text-sm font-semibold text-gray-700">Make</label>
-                <input type="text" name="make" placeholder="e.g. Toyota" required class="mt-1 w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-            </div>
-
-            <div>
-                <label class="block text-sm font-semibold text-gray-700">Model</label>
-                <input type="text" name="model" placeholder="e.g. Prius" required class="mt-1 w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-            </div>
-
-            <div>
-                <label class="block text-sm font-semibold text-gray-700">Year</label>
-                <input type="number" name="year" placeholder="e.g. 2018" required class="mt-1 w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-            </div>
-
-            <div>
-                <label class="block text-sm font-semibold text-gray-700">Mileage</label>
-                <input type="number" name="mileage" placeholder="e.g. 55000" required class="mt-1 w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-            </div>
-
-            <div>
-                <label class="block text-sm font-semibold text-gray-700">Owner's Username</label>
-
-                <input type="text" name="ownerUsername" list="user-list" placeholder="Select or type a name..." required autocomplete="off"
-                       class="mt-1 w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-
-                <datalist id="user-list">
-                    <%
-                        // Read all users from the system
-                        UserManager uManager = new UserManager();
-                        List<User> allUserAccounts = uManager.getAllUsers();
-
-                        for (User u : allUserAccounts) {
-                            // Only suggest people who have a "customer" badge!
-                            if (u.getRole().equals("customer")) {
-                    %>
-                                <option value="<%= u.getUsername() %>"></option>
-                    <%
-                            }
-                        }
-                    %>
-                </datalist>
-            </div>
-
-            <div class="md:col-span-3 mt-4">
-                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition-colors">
-                    <i class="fa-solid fa-plus mr-2"></i> Save Vehicle to System
-                </button>
-            </div>
-        </form>
-    </div>
 
     <div class="bg-white shadow-xl rounded-2xl border border-gray-100 overflow-hidden">
         <table class="min-w-full divide-y divide-gray-200">

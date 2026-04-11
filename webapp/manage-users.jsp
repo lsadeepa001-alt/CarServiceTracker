@@ -26,9 +26,14 @@
 
 <div class="max-w-7xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
 
-    <div class="mb-8">
-        <h1 class="text-3xl font-extrabold text-indigo-900"><i class="fa-solid fa-users-gear mr-3"></i>User Management</h1>
-        <p class="mt-2 text-sm text-gray-600">View and remove registered accounts from the system.</p>
+    <div class="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center">
+        <div>
+            <h1 class="text-3xl font-extrabold text-indigo-900"><i class="fa-solid fa-users-gear mr-3"></i>User Management</h1>
+            <p class="mt-2 text-sm text-gray-600">View and remove registered accounts from the system.</p>
+        </div>
+        <a href="register.jsp" class="mt-4 sm:mt-0 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 px-6 rounded-xl shadow-md transition-colors duration-200 flex items-center gap-2">
+            <i class="fa-solid fa-user-plus"></i> Register New User
+        </a>
     </div>
 
     <div class="bg-white shadow-xl rounded-2xl border border-gray-100 overflow-hidden">

@@ -6,6 +6,14 @@ import java.util.List;
 
 public class UserManager {
 
+    public UserManager() {
+        // --- ADMIN BOOTSTRAPPER ---
+        // If the database is empty or running for the very first time, create the Master Admin account.
+        if (!userExists("Admin")) {
+            registerUser(new User("Admin", "admin1234@", "admin"));
+        }
+    }
+
     // 1. REGISTER THE USER (Your existing code)
     // 0. CHECK IF USER EXISTS
     public boolean userExists(String username) {

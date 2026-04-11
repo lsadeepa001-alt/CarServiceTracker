@@ -78,9 +78,12 @@
                     </div>
                 </div>
 
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-5">
-                    <h2 class="text-xl font-bold text-slate-800 mb-4"><i class="fa-solid fa-warehouse text-gray-700 mr-2"></i>My Garage</h2>
-                    <div class="space-y-3">
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="bg-indigo-50 border-b border-gray-200 p-5 flex justify-between items-center">
+                        <h2 class="text-xl font-bold text-slate-800"><i class="fa-solid fa-warehouse text-indigo-600 mr-2"></i>My Garage</h2>
+                        <a href="customer_vehicles.jsp" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-3 py-2 rounded-lg shadow-sm transition"><i class="fa-solid fa-gear mr-1"></i> Manage</a>
+                    </div>
+                    <div class="p-5 space-y-3">
                         <%
                             VehicleManager vm = new VehicleManager();
                             List<Vehicle> myCars = vm.getAllVehicles();

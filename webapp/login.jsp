@@ -75,13 +75,7 @@
                         Sign In
                     </button>
 
-                    <div class="text-sm text-center text-gray-600">
-                        Don't have an account? 
-                        <a href="register.jsp" class="font-semibold text-blue-600 hover:text-blue-500 hover:underline transition-colors duration-200">
-                            Register here
-                        </a>
-                    </div>
-                    
+
                     <a 
                         href="index.jsp" 
                         class="text-center text-sm text-gray-500 hover:text-gray-700 hover:underline flex items-center justify-center gap-1 transition-colors duration-200"

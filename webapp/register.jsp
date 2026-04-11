@@ -1,4 +1,11 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%
+    String role = (String) session.getAttribute("userRole");
+    if (!"admin".equals(role)) {
+        response.sendRedirect("login.jsp");
+        return;
+    }
+%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -99,21 +106,14 @@
                         Create Account
                     </button>
                     
-                    <div class="text-sm text-center text-gray-600">
-                        Already have an account? 
-                        <a href="login.jsp" class="font-semibold text-blue-600 hover:text-blue-500 hover:underline transition-colors duration-200">
-                            Sign in here
-                        </a>
-                    </div>
-                    
                     <a 
-                        href="index.jsp" 
-                        class="text-center text-sm text-gray-500 hover:text-gray-700 hover:underline flex items-center justify-center gap-1 transition-colors duration-200 pt-2 border-t border-gray-100"
+                        href="manage-users.jsp" 
+                        class="text-center text-sm text-gray-500 hover:text-red-600 hover:underline flex items-center justify-center gap-1 transition-colors duration-200"
                     >
                         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                         </svg>
-                        Back to Home
+                        Cancel & Return
                     </a>
                 </div>
             </form>
