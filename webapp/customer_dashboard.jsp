@@ -2,7 +2,9 @@
 <%@ page import="model.ServiceHistoryList, model.ServiceRecord, model.Node" %>
 <%@ page import="model.BookingManager, model.Appointment, java.util.List" %>
 <%@ page import="model.VehicleManager, model.Vehicle" %>
-<%@ page import="model.BillingManager, model.Invoice, java.util.Stack" %> <%
+<%@ page import="model.BillingManager, model.Invoice, java.util.Stack" %>
+<%@ page import="model.FeedbackManager, model.Feedback, java.util.ArrayList" %>
+<%
     // SECURITY CHECK
     String username = (String) session.getAttribute("username");
     if (username == null) {
@@ -171,6 +173,8 @@
                                 <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase">Date</th>
                                 <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase">Vehicle</th>
                                 <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase">Service Performed</th>
+                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase">Your Rating</th>
+                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase">Support Reply</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-100">
@@ -179,6 +183,12 @@
                                 if (list == null) {
                                     list = new ServiceHistoryList();
                                     list.loadFromFile();
+                                }
+
+                                FeedbackManager fbMgr = new FeedbackManager();
+                                List<Feedback> userFBs = new ArrayList<>();
+                                for(Feedback fb : fbMgr.getAllFeedback()) {
+                                    if(fb.getCustomerUsername().equals(username)) userFBs.add(fb);
                                 }
 
                                 Node current = list.head;
@@ -195,12 +205,47 @@
 
                                     if(belongsToUser) {
                                         hasHistory = true;
+                                        
+                                        String expectedRef = current.data.getDate() + " - " + current.data.getServiceType() + " [" + current.data.getLicensePlate() + "]";
+                                        Feedback matchedFb = null;
+                                        for(Feedback f : userFBs) {
+                                            if(f.getServiceRef().equals(expectedRef)) {
+                                                matchedFb = f; break;
+                                            }
+                                        }
+                                        
+                                        boolean hasFb = matchedFb != null;
+                                        int passedRating = hasFb ? matchedFb.getRating() : 0;
+                                        String passedReply = hasFb ? matchedFb.getAdminReply() : "";
+                                        passedReply = passedReply.replace("'", "\\'");
                             %>
                                         <tr class="hover:bg-gray-50 border-transparent hover:border-indigo-100 cursor-pointer transition-all border-l-4" 
-                                            onclick="openHistoryModal('<%= current.data.getDate() %>', '<%= current.data.getLicensePlate() %>', '<%= current.data.getServiceType() %>', '<%= current.data.getPartsUsed() %>', '<%= String.format("%,.2f", current.data.getCost()) %>')">
+                                            onclick="openHistoryModal('<%= current.data.getDate() %>', '<%= current.data.getLicensePlate() %>', '<%= current.data.getServiceType() %>', '<%= current.data.getPartsUsed() %>', '<%= String.format("%,.2f", current.data.getCost()) %>', <%= hasFb %>, <%= passedRating %>, '<%= passedReply %>')">
                                             <td class="px-6 py-4 text-sm font-medium text-gray-900"><%= current.data.getDate() %></td>
                                             <td class="px-6 py-4 text-sm font-mono text-gray-500"><%= current.data.getLicensePlate() %></td>
                                             <td class="px-6 py-4 text-sm font-bold text-indigo-600"><%= current.data.getServiceType() %></td>
+                                            <td class="px-6 py-4 text-sm">
+                                                <% if(hasFb) { %>
+                                                    <div class="flex text-yellow-500 text-[10px]">
+                                                        <% for(int s=1; s<=5; s++) { %>
+                                                            <i class="<%= (s <= matchedFb.getRating()) ? "fa-solid" : "fa-regular" %> fa-star"></i>
+                                                        <% } %>
+                                                    </div>
+                                                <% } else { %>
+                                                    <span class="text-xs text-gray-400 italic">Pending</span>
+                                                <% } %>
+                                            </td>
+                                            <td class="px-6 py-4 text-sm">
+                                                <% if(hasFb) { 
+                                                    if(!"none".equals(matchedFb.getAdminReply())) { %>
+                                                        <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-green-100 text-green-700 border border-green-200 uppercase">Replied</span>
+                                                <%  } else { %>
+                                                        <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-700 border border-amber-200 uppercase">Awaiting</span>
+                                                <%  }
+                                                   } else { %>
+                                                    <span class="text-gray-300">-</span>
+                                                <% } %>
+                                            </td>
                                         </tr>
                                 <%
                                         }
@@ -209,7 +254,7 @@
 
                                     if (!hasHistory) {
                                 %>
-                                        <tr><td colspan="3" class="px-6 py-8 text-center text-sm text-gray-400 italic">No service history found for your vehicles.</td></tr>
+                                        <tr><td colspan="5" class="px-6 py-8 text-center text-sm text-gray-400 italic">No service history found for your vehicles.</td></tr>
                                 <%  } %>
                             </tbody>
                         </table>
@@ -249,7 +294,7 @@
                     <span id="modalCost" class="text-2xl font-black tracking-tight"></span>
                 </div>
                 
-                <div class="mt-6 border-t border-gray-100 pt-5">
+                <div class="mt-6 border-t border-gray-100 pt-5" id="feedbackFormBlock">
                     <h4 class="text-sm font-bold text-slate-800 mb-3 block"><i class="fa-solid fa-star text-indigo-500 mr-2"></i>Rate this Service</h4>
                     <form action="SubmitFeedbackServlet" method="POST" class="space-y-3">
                         <input type="hidden" name="serviceRef" id="feedbackServiceRef">
@@ -276,12 +321,26 @@
                         <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-xl shadow-sm transition">Post Review</button>
                     </form>
                 </div>
+                
+                <div class="mt-6 border-t border-gray-100 pt-5 hidden" id="feedbackSubmittedBlock">
+                    <h4 class="text-sm font-bold text-slate-800 mb-2"><i class="fa-solid fa-check-circle text-green-500 mr-2"></i>Feedback Submitted</h4>
+                    <div class="bg-gray-50 p-4 rounded-xl border border-gray-200">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="text-xs uppercase font-bold text-gray-500">Your Rating:</span>
+                            <div class="flex text-yellow-500 text-sm" id="modalDisplayStars"></div>
+                        </div>
+                        <div id="modalAdminReplyBlock">
+                            <span class="text-xs uppercase font-bold text-teal-600 mt-3 block mb-1">Support Reply:</span>
+                            <p class="text-sm text-gray-800 italic bg-white p-3 border border-gray-200 rounded-lg shadow-sm" id="modalAdminReplyText"></p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
     
     <script>
-        function openHistoryModal(date, plate, service, parts, cost) {
+        function openHistoryModal(date, plate, service, parts, cost, hasFeedback, rating, adminReply) {
             document.getElementById('modalDate').innerText = date;
             document.getElementById('modalPlate').innerText = plate;
             document.getElementById('modalService').innerText = service;
@@ -290,6 +349,27 @@
             
             // Set dynamic feedback context
             document.getElementById('feedbackServiceRef').value = date + " - " + service + " [" + plate + "]";
+            
+            if (hasFeedback) {
+                document.getElementById('feedbackFormBlock').classList.add('hidden');
+                document.getElementById('feedbackSubmittedBlock').classList.remove('hidden');
+                
+                let starHtml = '';
+                for(let i=1; i<=5; i++) {
+                    starHtml += '<i class="' + (i <= rating ? 'fa-solid' : 'fa-regular') + ' fa-star"></i>';
+                }
+                document.getElementById('modalDisplayStars').innerHTML = starHtml;
+                
+                if (adminReply && adminReply !== 'none') {
+                    document.getElementById('modalAdminReplyBlock').classList.remove('hidden');
+                    document.getElementById('modalAdminReplyText').innerText = adminReply;
+                } else {
+                    document.getElementById('modalAdminReplyBlock').classList.add('hidden');
+                }
+            } else {
+                document.getElementById('feedbackFormBlock').classList.remove('hidden');
+                document.getElementById('feedbackSubmittedBlock').classList.add('hidden');
+            }
             
             const modal = document.getElementById('historyModal');
             modal.classList.remove('hidden');
