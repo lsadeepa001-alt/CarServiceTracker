@@ -7,19 +7,21 @@ public class InventoryItem {
     private int quantity;       // e.g., 15 (If 0, it's Out of Stock!)
     private double price;       // e.g., 4500.00
     private String iconName;    // We will use FontAwesome icons instead of complex image uploads! e.g., "fa-compact-disc"
+    private String applicableService; // The specific abstract Service this part binds to!
 
     // 1. The Empty Constructor (Crucial for JSON saving)
     public InventoryItem() {
     }
 
     // 2. The Main Constructor
-    public InventoryItem(String itemId, String itemName, String category, int quantity, double price, String iconName) {
+    public InventoryItem(String itemId, String itemName, String category, int quantity, double price, String iconName, String applicableService) {
         this.itemId = itemId;
         this.itemName = itemName;
         this.category = category;
         this.quantity = quantity;
         this.price = price;
         this.iconName = iconName;
+        this.applicableService = applicableService;
     }
 
     // --- Getters & Setters ---
@@ -40,6 +42,9 @@ public class InventoryItem {
 
     public String getIconName() { return iconName; }
     public void setIconName(String iconName) { this.iconName = iconName; }
+
+    public String getApplicableService() { return applicableService; }
+    public void setApplicableService(String applicableService) { this.applicableService = applicableService; }
 
     // This is a "Smart Helper" method for the dashboard badges!
     public String getStockStatus() {

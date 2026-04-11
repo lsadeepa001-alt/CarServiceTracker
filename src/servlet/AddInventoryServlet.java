@@ -15,18 +15,18 @@ public class AddInventoryServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         // 1. CATCH THE DATA from the HTML form
-        // We use .toUpperCase() so IDs like "brk-01" automatically become "BRK-01"
         String itemId = request.getParameter("itemId").toUpperCase();
         String itemName = request.getParameter("itemName");
         String category = request.getParameter("category");
         String iconName = request.getParameter("iconName");
+        String applicableService = request.getParameter("applicableService");
 
         // Translate the text inputs into math numbers
         int quantity = Integer.parseInt(request.getParameter("quantity"));
         double price = Double.parseDouble(request.getParameter("price"));
 
         // 2. BOX IT UP into our Inventory Blueprint
-        InventoryItem newItem = new InventoryItem(itemId, itemName, category, quantity, price, iconName);
+        InventoryItem newItem = new InventoryItem(itemId, itemName, category, quantity, price, iconName, applicableService);
 
         // 3. HAND IT TO THE MANAGER to save permanently
         InventoryManager manager = new InventoryManager();

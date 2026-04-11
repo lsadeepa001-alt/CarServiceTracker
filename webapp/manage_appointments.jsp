@@ -10,7 +10,7 @@
     }
 
     BookingManager manager = new BookingManager();
-    List<Appointment> queue = manager.getAllAppointments();
+    List<Appointment> queue = manager.getPendingAppointments();
 %>
 
 <!DOCTYPE html>
@@ -37,6 +37,12 @@
                 </button>
             </form>
         <% } %>
+    </div>
+
+    <!-- TABS ROW -->
+    <div class="flex space-x-4 mb-6">
+        <a href="manage_appointments.jsp" class="px-4 py-2 bg-indigo-600 text-white rounded-lg shadow-md font-bold text-sm ring-2 ring-indigo-300 ring-offset-2 border border-indigo-700"><i class="fa-solid fa-list-ol mr-1"></i> View Queue</a>
+        <a href="in_garage.jsp" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg shadow-sm hover:bg-gray-300 transition font-bold text-sm"><i class="fa-solid fa-gears mr-1 ml-0.5"></i> Actively Maintained</a>
     </div>
 
     <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">

@@ -27,6 +27,7 @@
     { name: 'Dashboard', link: 'dashboard.jsp' },
     { name: 'Inventory', link: 'inventory.jsp' },
     { name: 'Appointments', link: 'manage_appointments.jsp' },
+    { name: 'Services', link: 'manage_services.jsp' },
     { name: 'Billing', link: 'billing_dashboard.jsp' }, // <-- NEW BILLING DOOR ADDED HERE!
     { name: 'Manage Users', link: 'manage-users.jsp' },
     { name: 'Manage Vehicle', link: 'manage-vehicle.jsp' },

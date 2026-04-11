@@ -54,19 +54,23 @@
                     <div class="p-5">
                         <%
                             BookingManager bm = new BookingManager();
-                            List<Appointment> allApps = bm.getAllAppointments();
+                            List<Appointment> allApps = bm.getAllAppointmentsNatively();
                             boolean hasApp = false;
 
                             for (Appointment app : allApps) {
                                 if (app.getCustomerUsername().equals(username)) {
                                     hasApp = true;
+                                    String statusText = app.getStatus();
+                                    String badgeClass = "text-amber-500"; // Pending
+                                    if ("Under Maintenance".equals(statusText)) badgeClass = "text-orange-500 animate-pulse";
+                                    else if ("Completed".equals(statusText)) badgeClass = "text-green-500";
                         %>
-                                    <div class="mb-3 p-3 border border-indigo-100 bg-indigo-50/30 rounded-xl">
+                                    <div class="mb-3 p-3 border border-indigo-100 bg-indigo-50/30 rounded-xl shadow-sm">
                                         <div class="flex justify-between items-start mb-1">
-                                            <span class="text-xs font-bold text-indigo-500 bg-white px-2 py-0.5 border border-indigo-100 rounded"><%= app.getAppointmentId() %></span>
-                                            <span class="text-xs font-bold text-amber-500"><i class="fa-solid fa-hourglass-half"></i> In Queue</span>
+                                            <span class="text-xs font-bold text-indigo-500 bg-white px-2 py-0.5 border border-indigo-200 shadow-sm rounded"><%= app.getAppointmentId() %></span>
+                                            <span class="text-xs font-bold <%= badgeClass %>"><i class="fa-solid fa-circle text-[8px] align-middle mr-1"></i> <%= statusText %></span>
                                         </div>
-                                        <p class="font-bold text-gray-800 text-sm mt-2"><i class="fa-solid fa-car text-gray-400 mr-1"></i> <%= app.getLicensePlate() %></p>
+                                        <p class="font-bold text-gray-800 text-sm mt-2"><i class="fa-solid fa-car text-gray-400 mr-1"></i> <%= app.getLicensePlate() %> <span class="text-xs text-gray-400 font-normal ml-1">| <%= app.getIssueDescription() %></span></p>
                                         <p class="text-xs text-gray-500 mt-1"><i class="fa-regular fa-calendar text-gray-400 mr-1"></i> <%= app.getPreferredDate() %> at <%= app.getPreferredTime() %></p>
                                     </div>
                         <%      }
@@ -196,27 +200,80 @@
                                     if(belongsToUser) {
                                         hasHistory = true;
                             %>
-                                    <tr class="hover:bg-gray-50">
-                                        <td class="px-6 py-4 text-sm font-medium text-gray-900"><%= current.data.getDate() %></td>
-                                        <td class="px-6 py-4 text-sm font-mono text-gray-500"><%= current.data.getLicensePlate() %></td>
-                                        <td class="px-6 py-4 text-sm text-gray-600"><%= current.data.getServiceType() %></td>
-                                    </tr>
-                            <%
+                                        <tr class="hover:bg-gray-50 border-transparent hover:border-indigo-100 cursor-pointer transition-all border-l-4" 
+                                            onclick="openHistoryModal('<%= current.data.getDate() %>', '<%= current.data.getLicensePlate() %>', '<%= current.data.getServiceType() %>', '<%= current.data.getPartsUsed() %>', '<%= String.format("%,.2f", current.data.getCost()) %>')">
+                                            <td class="px-6 py-4 text-sm font-medium text-gray-900"><%= current.data.getDate() %></td>
+                                            <td class="px-6 py-4 text-sm font-mono text-gray-500"><%= current.data.getLicensePlate() %></td>
+                                            <td class="px-6 py-4 text-sm font-bold text-indigo-600"><%= current.data.getServiceType() %></td>
+                                        </tr>
+                                <%
+                                        }
+                                        current = current.next;
                                     }
-                                    current = current.next;
-                                }
 
-                                if (!hasHistory) {
-                            %>
-                                    <tr><td colspan="3" class="px-6 py-8 text-center text-sm text-gray-400 italic">No service history found for your vehicles.</td></tr>
-                            <%  } %>
-                        </tbody>
-                    </table>
+                                    if (!hasHistory) {
+                                %>
+                                        <tr><td colspan="3" class="px-6 py-8 text-center text-sm text-gray-400 italic">No service history found for your vehicles.</td></tr>
+                                <%  } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    <!-- NATIVE TAILWIND MODAL FOR HISTORY -->
+    <div id="historyModal" class="hidden fixed inset-0 z-50 overflow-y-auto bg-black/50 backdrop-blur-sm shadow-2xl flex items-center justify-center transition-opacity duration-300">
+        <div class="bg-white rounded-3xl shadow-2xl max-w-lg w-full p-8 transform scale-95 transition-transform duration-300">
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <h3 class="text-2xl font-black text-gray-900"><i class="fa-solid fa-book-open text-indigo-500 mr-2"></i>Service Log</h3>
+                    <p id="modalDate" class="text-sm font-bold text-gray-500 mt-1"></p>
+                </div>
+                <button onclick="closeHistoryModal()" class="text-gray-400 hover:text-gray-600 focus:outline-none"><i class="fa-solid fa-xmark text-2xl"></i></button>
+            </div>
+            <div class="space-y-6">
+                <div class="flex justify-between items-end border-b border-gray-100 pb-4">
+                    <div>
+                        <span class="text-xs uppercase font-bold text-gray-400 block mb-1">Vehicle Handled</span>
+                        <span id="modalPlate" class="text-lg font-mono font-bold text-indigo-600 bg-indigo-50 px-2 py-1 rounded"></span>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-xs uppercase font-bold text-gray-400 block mb-1">Core Service</span>
+                        <span id="modalService" class="text-lg font-black text-gray-800"></span>
+                    </div>
+                </div>
+                <div class="bg-gray-50 p-4 rounded-xl border border-gray-200">
+                    <span class="text-xs uppercase font-bold text-gray-500 block mb-2"><i class="fa-solid fa-boxes-stacked mr-1"></i>Parts & Inventory Consumed</span>
+                    <p id="modalParts" class="text-sm text-gray-700 italic"></p>
+                </div>
+                <div class="flex justify-between items-center bg-indigo-600 text-white p-4 rounded-xl shadow-inner mt-4">
+                    <span class="text-sm font-bold uppercase tracking-wider text-indigo-200">Total Billed</span>
+                    <span id="modalCost" class="text-2xl font-black tracking-tight"></span>
                 </div>
             </div>
-
         </div>
     </div>
+    
+    <script>
+        function openHistoryModal(date, plate, service, parts, cost) {
+            document.getElementById('modalDate').innerText = date;
+            document.getElementById('modalPlate').innerText = plate;
+            document.getElementById('modalService').innerText = service;
+            document.getElementById('modalParts').innerText = parts && parts !== 'null' ? parts : 'No physical parts consumed.';
+            document.getElementById('modalCost').innerText = 'LKR ' + cost;
+            
+            const modal = document.getElementById('historyModal');
+            modal.classList.remove('hidden');
+            setTimeout(() => { modal.firstElementChild.classList.remove('scale-95'); }, 10);
+        }
+        function closeHistoryModal() {
+            const modal = document.getElementById('historyModal');
+            modal.firstElementChild.classList.add('scale-95');
+            setTimeout(() => { modal.classList.add('hidden'); }, 200);
+        }
+    </script>
 <%@ include file="logout_script.jsp" %>
 </body>
 </html>

@@ -16,10 +16,10 @@ public class CompleteNextServlet extends HttpServlet {
 
         BookingManager manager = new BookingManager();
 
-        // This automatically removes the First-In (FIFO) from the queue!
-        Appointment completed = manager.completeNextAppointment();
+        // This pops the First-In vehicle and formally routes it into the Garage Queue (Under Maintenance)
+        manager.moveToGarage();
 
-        // Go back to the live queue dashboard
-        response.sendRedirect("manage_appointments.jsp");
+        // Redirect the admin instantly into the Garage portal to begin working on the car!
+        response.sendRedirect("in_garage.jsp");
     }
 }

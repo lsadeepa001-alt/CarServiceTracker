@@ -1,5 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="model.VehicleManager, model.Vehicle, java.util.List" %>
+<%@ page import="model.ServiceTypeManager, model.ServiceType" %>
+<%@ page import="model.InventoryManager, model.InventoryItem" %>
 <%
     // SECURITY CHECK: Must be logged in!
     String username = (String) session.getAttribute("username");
@@ -64,8 +66,34 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-bold text-gray-700 mb-1">Describe the Issue</label>
-                    <textarea name="issueDescription" rows="3" placeholder="E.g., Brakes are squeaking, needs oil change..." required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"></textarea>
+                    <label class="block text-sm font-bold text-gray-700 mb-1">Select Service Type</label>
+                    <select name="issueDescription" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 bg-white">
+                        <option value="" disabled selected>-- Select Required Service --</option>
+                        <%
+                            ServiceTypeManager stm = new ServiceTypeManager();
+                            InventoryManager im = new InventoryManager();
+                            List<ServiceType> sList = stm.getAllServices();
+                            List<InventoryItem> invList = im.getAllItems();
+
+                            for (ServiceType st : sList) {
+                                boolean isAvailable = true;
+                                // Check if ANY mapped part is completely out of stock
+                                for (InventoryItem item : invList) {
+                                    if (st.getServiceName().equals(item.getApplicableService()) && item.getQuantity() <= 0) {
+                                        isAvailable = false;
+                                        break; // Out of stock part found! Disable service.
+                                    }
+                                }
+
+                                if (isAvailable) {
+                        %>
+                                    <option value="<%= st.getServiceName() %>"><%= st.getServiceName() %></option>
+                        <%      } else { %>
+                                    <option value="" disabled class="text-red-400"><%= st.getServiceName() %> (Parts Out of Stock)</option>
+                        <%      }
+                            }
+                        %>
+                    </select>
                 </div>
 
                 <div class="pt-4">

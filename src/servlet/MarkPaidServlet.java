@@ -20,8 +20,45 @@ public class MarkPaidServlet extends HttpServlet {
         // Tell the manager to mark it as PAID
         BillingManager bm = new BillingManager();
         bm.markAsPaid(targetInvoiceId);
+        
+        // 1. Fetch the exact invoice to extract data for History
+        Invoice targeted = null;
+        for (Invoice inv : bm.getAllInvoices()) {
+            if (inv.getInvoiceId().equals(targetInvoiceId)) {
+                targeted = inv;
+                break;
+            }
+        }
+        
+        if (targeted != null) {
+            String fullDescription = targeted.getServiceDescription();
+            String abstractService = fullDescription;
+            String partsUsedLog = "No parts consumed.";
+            
+            // Extract out the parts dynamically from how we formulated it in billing
+            if (fullDescription.contains("(Parts: ")) {
+                int splitIndex = fullDescription.indexOf("(Parts: ");
+                abstractService = fullDescription.substring(0, splitIndex).trim();
+                partsUsedLog = fullDescription.substring(splitIndex + 8, fullDescription.length() - 1);
+            }
+            
+            // 2. Build the Native History Object Node mapping the extracted strings
+            ServiceRecord historicalRecord = new ServiceRecord(
+                targeted.getDateIssued(),
+                abstractService,
+                targeted.getTotalAmount(),
+                targeted.getLicensePlate(),
+                partsUsedLog
+            );
+            
+            // 3. Push it directly into the strict LinkedList implementation!
+            ServiceHistoryList historyEngine = new ServiceHistoryList();
+            historyEngine.loadFromFile();
+            historyEngine.addRecord(historicalRecord);
+            historyEngine.saveToFile();
+        }
 
         // Refresh the page to see it turn green!
-        response.sendRedirect("billing_dashboard.jsp");
+        response.sendRedirect("billing_dashboard.jsp?success=paid");
     }
 }

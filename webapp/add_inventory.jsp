@@ -1,4 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="model.ServiceTypeManager, model.ServiceType, java.util.List" %>
+<%@ page import="model.ServiceTypeManager, model.ServiceType, java.util.List" %>
 <%
     // SECURITY CHECK: Admin only!
     String role = (String) session.getAttribute("userRole");
@@ -64,6 +66,22 @@
                                 <option value="fa-oil-can">🛢️ Oil / Fluids</option>
                                 <option value="fa-compact-disc">💿 Brake Disc</option>
                                 <option value="fa-wrench">🔧 General Tool/Part</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 gap-5">
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-1">Applicable Service (Optional Mapping)</label>
+                            <select name="applicableService" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 bg-white">
+                                <option value="none">Universal Part (Fits All)</option>
+                                <%
+                                    ServiceTypeManager stm = new ServiceTypeManager();
+                                    List<ServiceType> services = stm.getAllServices();
+                                    for (ServiceType st : services) {
+                                %>
+                                    <option value="<%= st.getServiceName() %>"><%= st.getServiceName() %></option>
+                                <% } %>
                             </select>
                         </div>
                     </div>
