@@ -6,6 +6,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 
 @WebServlet("/MarkPaidServlet")
@@ -52,10 +53,19 @@ public class MarkPaidServlet extends HttpServlet {
             );
             
             // 3. Push it directly into the strict LinkedList implementation!
-            ServiceHistoryList historyEngine = new ServiceHistoryList();
-            historyEngine.loadFromFile();
+            HttpSession session = request.getSession();
+            ServiceHistoryList historyEngine = (ServiceHistoryList) session.getAttribute("serviceList");
+            
+            if (historyEngine == null) {
+                historyEngine = new ServiceHistoryList();
+                historyEngine.loadFromFile();
+            }
+            
             historyEngine.addRecord(historicalRecord);
             historyEngine.saveToFile();
+            
+            // 4. Force Update into Session memory directly to prevent Admin refresh lag!
+            session.setAttribute("serviceList", historyEngine);
         }
 
         // Refresh the page to see it turn green!
