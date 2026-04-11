@@ -40,6 +40,40 @@ public class BillingManager {
         saveToFile();
     }
 
+    // 5. DELETE INVOICE (Synchronization Hook)
+    public boolean deleteInvoiceByMetadata(String plate, String date, String type) {
+        for (Invoice inv : invoiceStack) {
+            boolean plateMatch = inv.getLicensePlate() != null && inv.getLicensePlate().equals(plate);
+            boolean dateMatch = inv.getDateIssued() != null && inv.getDateIssued().equals(date);
+            boolean typeMatch = inv.getServiceDescription() != null && inv.getServiceDescription().equals(type);
+            
+            if (plateMatch && dateMatch && typeMatch) {
+                invoiceStack.remove(inv);
+                saveToFile();
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // 6. UPDATE INVOICE (Synchronization Hook)
+    public boolean updateInvoiceByMetadata(String plate, String oldDate, String oldType, String newDate, String newType, double newCost) {
+        for (Invoice inv : invoiceStack) {
+            boolean plateMatch = inv.getLicensePlate() != null && inv.getLicensePlate().equals(plate);
+            boolean dateMatch = inv.getDateIssued() != null && inv.getDateIssued().equals(oldDate);
+            boolean typeMatch = inv.getServiceDescription() != null && inv.getServiceDescription().equals(oldType);
+
+            if (plateMatch && dateMatch && typeMatch) {
+                inv.setDateIssued(newDate);
+                inv.setServiceDescription(newType);
+                inv.setTotalAmount(newCost);
+                saveToFile();
+                return true;
+            }
+        }
+        return false;
+    }
+
     // --- MAGIC FILE SAVING ---
     private void saveToFile() {
         try (Writer writer = new FileWriter(FILE_PATH)) {

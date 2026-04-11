@@ -1,6 +1,6 @@
 package servlet;
-import model.*;
 
+import model.*;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -36,6 +36,10 @@ public class UpdateServiceServlet extends HttpServlet {
             list.saveToFile();
             session.setAttribute("serviceList", list);
         }
+
+        // 5. SYNCHRONIZE BILLING RECORD DYNAMICALLY
+        BillingManager bm = new BillingManager();
+        bm.updateInvoiceByMetadata(targetPlate, oldDate, oldType, newDate, newType, newCost);
 
         response.sendRedirect("dashboard.jsp");
     }

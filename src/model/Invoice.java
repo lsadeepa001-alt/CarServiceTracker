@@ -41,4 +41,8 @@ public class Invoice {
 
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+
+    public void setDateIssued(String date) { this.dateIssued = date; }
+    public void setServiceDescription(String desc) { this.serviceDescription = desc; }
+    public void setTotalAmount(double amount) { this.totalAmount = amount; }
 }

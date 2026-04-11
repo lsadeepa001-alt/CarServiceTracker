@@ -1,6 +1,6 @@
 package servlet;
-import model.*;
 
+import model.*;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -39,7 +39,25 @@ public class AddServiceServlet extends HttpServlet {
 
         session.setAttribute("serviceList", list);
 
-        // 5. GO BACK TO DASHBOARD
+        // 5. SYNCHRONIZE WITH BILLING STACK
+        VehicleManager vm = new VehicleManager();
+        String targetCustomer = "MANUAL_ENTRY";
+        for (Vehicle v : vm.getAllVehicles()) {
+            if (v.getLicensePlate() != null && v.getLicensePlate().equals(licensePlate)) {
+                targetCustomer = v.getOwnerUsername();
+                break;
+            }
+        }
+
+        String autoInvId = "INV" + (System.currentTimeMillis() % 100000);
+        Invoice autoSyncBill = new Invoice(autoInvId, targetCustomer, licensePlate, serviceType, cost, 0.0);
+        autoSyncBill.setDateIssued(date);
+        autoSyncBill.setStatus("PAID"); // It's manual entry, assuming it's already reconciled physically
+        
+        BillingManager bm = new BillingManager();
+        bm.generateInvoice(autoSyncBill);
+
+        // 6. GO BACK TO DASHBOARD
         response.sendRedirect("dashboard.jsp");
     }
 }
