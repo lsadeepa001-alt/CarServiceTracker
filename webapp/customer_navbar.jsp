@@ -29,8 +29,7 @@
   const custTabs = [
     { name: 'Dashboard', link: 'customer_dashboard.jsp', icon: 'fa-table-columns' },
     { name: 'My Garage', link: 'customer_vehicles.jsp', icon: 'fa-warehouse' },
-    { name: 'Appointments', link: 'book_appointment.jsp', icon: 'fa-calendar-check' },
-    { name: 'Feedback', link: 'customer_feedback.jsp', icon: 'fa-comment-dots' }
+    { name: 'Appointments', link: 'book_appointment.jsp', icon: 'fa-calendar-check' }
   ];
 
   const cDesktopMenu = document.getElementById('cust-desktop-menu');

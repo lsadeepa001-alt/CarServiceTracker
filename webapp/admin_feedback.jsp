@@ -50,13 +50,23 @@
                         String badgeClass = needsReply ? "bg-amber-100 text-amber-700 border-amber-200 animate-pulse" : "bg-green-100 text-green-700 border-green-200";
                 %>
                     <div class="bg-white border text-base border-gray-200 shadow-sm rounded-xl overflow-hidden hover:shadow-md transition-shadow">
-                        <div class="p-4 border-b border-gray-100 bg-slate-50 flex justify-between items-center">
-                            <div class="flex items-center gap-3">
-                                <span class="text-sm font-bold text-gray-800"><i class="fa-solid fa-user text-gray-400 mr-2"></i><%= fb.getCustomerUsername() %></span>
-                                <span class="text-xs text-gray-400">|</span>
-                                <span class="text-xs font-semibold text-gray-500"><%= fb.getDateSubmitted() %></span>
+                        <div class="p-5 border-b border-gray-100 bg-slate-50 flex justify-between items-center">
+                            <div class="flex flex-col gap-1">
+                                <div class="flex items-center gap-3">
+                                    <span class="text-sm font-bold text-gray-800"><i class="fa-solid fa-user text-gray-400 mr-2"></i><%= fb.getCustomerUsername() %></span>
+                                    <span class="text-xs text-gray-400">|</span>
+                                    <span class="text-xs font-semibold text-gray-500"><%= fb.getDateSubmitted() %></span>
+                                </div>
+                                <div class="flex items-center gap-2 mt-1">
+                                    <div class="flex text-yellow-400 text-xs">
+                                        <% for(int s=1; s<=5; s++) { %>
+                                            <i class="<%= s <= fb.getRating() ? "fa-solid" : "fa-regular" %> fa-star"></i>
+                                        <% } %>
+                                    </div>
+                                    <span class="text-xs font-mono font-bold text-indigo-500 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-100 uppercase"><%= fb.getServiceRef() %></span>
+                                </div>
                             </div>
-                            <span class="text-xs font-bold px-2.5 py-1 border rounded-lg <%= badgeClass %> shadow-sm uppercase tracking-wider text-[10px]">
+                            <span class="text-xs font-bold px-2.5 py-1 border rounded-lg <%= badgeClass %> shadow-sm uppercase tracking-wider text-[10px] whitespace-nowrap ml-4">
                                 <%= badgeText %>
                             </span>
                         </div>

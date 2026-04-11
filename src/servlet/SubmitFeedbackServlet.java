@@ -24,12 +24,22 @@ public class SubmitFeedbackServlet extends HttpServlet {
         }
 
         String message = request.getParameter("message");
+        if (message == null || message.trim().isEmpty()) {
+            message = "No comments provided.";
+        }
+        
+        int rating = 5;
+        try { if(request.getParameter("rating") != null) rating = Integer.parseInt(request.getParameter("rating")); } catch (Exception ignored) {}
+        
+        String serviceRef = request.getParameter("serviceRef");
+        if (serviceRef == null || serviceRef.trim().isEmpty()) serviceRef = "General Rating";
+
         String dateSubmitted = new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date());
 
-        Feedback newFeedback = new Feedback(username, message, dateSubmitted);
+        Feedback newFeedback = new Feedback(username, message, dateSubmitted, rating, serviceRef);
         FeedbackManager manager = new FeedbackManager();
         manager.saveFeedback(newFeedback);
 
-        response.sendRedirect("customer_feedback.jsp?success=true");
+        response.sendRedirect("customer_dashboard.jsp?feedbackSuccess=true");
     }
 }

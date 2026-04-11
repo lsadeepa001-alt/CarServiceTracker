@@ -15,8 +15,9 @@ public class FeedbackManager {
             // Encode line breaks and pipes to avoid breaking storage layout
             String safeMsg = feedback.getMessage().replace("|", " ").replace("\r", "").replace("\n", "__NL__");
             String safeReply = (feedback.getAdminReply() != null) ? feedback.getAdminReply().replace("|", " ").replace("\r", "").replace("\n", "__NL__") : "none";
+            String safeRef = (feedback.getServiceRef() != null) ? feedback.getServiceRef().replace("|", " ") : "General";
             
-            writer.write(feedback.getFeedbackId() + "|" + feedback.getCustomerUsername() + "|" + safeMsg + "|" + safeReply + "|" + feedback.getDateSubmitted());
+            writer.write(feedback.getFeedbackId() + "|" + feedback.getCustomerUsername() + "|" + safeMsg + "|" + safeReply + "|" + feedback.getDateSubmitted() + "|" + feedback.getRating() + "|" + safeRef);
             writer.newLine();
             writer.close();
         } catch (IOException e) {
@@ -40,8 +41,15 @@ public class FeedbackManager {
                     // Decode line breaks back
                     String msg = parts[2].replace("__NL__", "\n");
                     String reply = parts[3].replace("__NL__", "\n");
+                    int rating = 5;
+                    String ref = "Legacy Feedback";
                     
-                    Feedback fb = new Feedback(parts[0], parts[1], msg, reply, parts[4]);
+                    if (parts.length >= 7) {
+                        try { rating = Integer.parseInt(parts[5]); } catch (Exception ignored) {}
+                        ref = parts[6];
+                    }
+                    
+                    Feedback fb = new Feedback(parts[0], parts[1], msg, reply, parts[4], rating, ref);
                     list.add(fb);
                 }
             }
@@ -65,8 +73,9 @@ public class FeedbackManager {
                 
                 String safeMsg = fb.getMessage().replace("|", " ").replace("\r", "").replace("\n", "__NL__");
                 String safeReply = (fb.getAdminReply() != null) ? fb.getAdminReply().replace("|", " ").replace("\r", "").replace("\n", "__NL__") : "none";
+                String safeRef = (fb.getServiceRef() != null) ? fb.getServiceRef().replace("|", " ") : "General";
                 
-                writer.write(fb.getFeedbackId() + "|" + fb.getCustomerUsername() + "|" + safeMsg + "|" + safeReply + "|" + fb.getDateSubmitted());
+                writer.write(fb.getFeedbackId() + "|" + fb.getCustomerUsername() + "|" + safeMsg + "|" + safeReply + "|" + fb.getDateSubmitted() + "|" + fb.getRating() + "|" + safeRef);
                 writer.newLine();
             }
             writer.close();

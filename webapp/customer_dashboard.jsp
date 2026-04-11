@@ -18,6 +18,14 @@
     <title>My Dashboard - SwiftDrive</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .rating-stars { display: flex; flex-direction: row-reverse; justify-content: flex-end; gap: 0.25rem; }
+        .rating-stars input { display: none; }
+        .rating-stars label { cursor: pointer; color: #e2e8f0; font-size: 1.5rem; transition: color 0.2s; }
+        .rating-stars input:checked ~ label,
+        .rating-stars label:hover,
+        .rating-stars label:hover ~ label { color: #facc15; }
+    </style>
 </head>
 <body class="bg-slate-50 antialiased pt-16">
 
@@ -240,6 +248,34 @@
                     <span class="text-sm font-bold uppercase tracking-wider text-indigo-200">Total Billed</span>
                     <span id="modalCost" class="text-2xl font-black tracking-tight"></span>
                 </div>
+                
+                <div class="mt-6 border-t border-gray-100 pt-5">
+                    <h4 class="text-sm font-bold text-slate-800 mb-3 block"><i class="fa-solid fa-star text-indigo-500 mr-2"></i>Rate this Service</h4>
+                    <form action="SubmitFeedbackServlet" method="POST" class="space-y-3">
+                        <input type="hidden" name="serviceRef" id="feedbackServiceRef">
+                        
+                        <div class="rating-stars mb-2 pl-1">
+                            <input type="radio" id="star5" name="rating" value="5" required />
+                            <label for="star5"><i class="fa-solid fa-star"></i></label>
+                            
+                            <input type="radio" id="star4" name="rating" value="4" />
+                            <label for="star4"><i class="fa-solid fa-star"></i></label>
+                            
+                            <input type="radio" id="star3" name="rating" value="3" />
+                            <label for="star3"><i class="fa-solid fa-star"></i></label>
+                            
+                            <input type="radio" id="star2" name="rating" value="2" />
+                            <label for="star2"><i class="fa-solid fa-star"></i></label>
+                            
+                            <input type="radio" id="star1" name="rating" value="1" />
+                            <label for="star1"><i class="fa-solid fa-star"></i></label>
+                        </div>
+                        
+                        <textarea name="message" rows="2" class="w-full border-2 border-gray-200 rounded-xl p-3 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all" placeholder="Tell us how we did (Optional)"></textarea>
+                        
+                        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-xl shadow-sm transition">Post Review</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
@@ -252,6 +288,9 @@
             document.getElementById('modalParts').innerText = parts && parts !== 'null' ? parts : 'No physical parts consumed.';
             document.getElementById('modalCost').innerText = 'LKR ' + cost;
             
+            // Set dynamic feedback context
+            document.getElementById('feedbackServiceRef').value = date + " - " + service + " [" + plate + "]";
+            
             const modal = document.getElementById('historyModal');
             modal.classList.remove('hidden');
             setTimeout(() => { modal.firstElementChild.classList.remove('scale-95'); }, 10);
@@ -262,6 +301,14 @@
             setTimeout(() => { modal.classList.add('hidden'); }, 200);
         }
     </script>
+<%@ include file="toast.jsp" %>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        <% if ("true".equals(request.getParameter("feedbackSuccess"))) { %>
+            showToast("Thank you! Your feedback has been posted.", "success");
+        <% } %>
+    });
+</script>
 <%@ include file="logout_script.jsp" %>
 </body>
 </html>
