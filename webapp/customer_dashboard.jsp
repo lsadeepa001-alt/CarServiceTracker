@@ -162,75 +162,77 @@
                     </a>
                 </div>
                 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
-                    <% boolean hasApp = false;
-                       for (Appointment app : myApps) {
-                           hasApp = true;
-                           String statusText = app.getStatus();
-                           String cardCls = "bg-white dark:bg-slate-800/40 border-slate-200 dark:border-slate-700";
-                           String statusPill = "bg-amber-50 text-amber-600 border-amber-100 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-900/10";
-                           
-                           if ("Under Maintenance".equals(statusText)) {
-                               statusPill = "bg-orange-50 text-orange-600 border-orange-100 dark:bg-orange-900/30 dark:text-orange-400 dark:border-orange-900/10";
-                           } else if ("Completed".equals(statusText)) {
-                               statusPill = "bg-emerald-50 text-emerald-600 border-emerald-100 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-900/10";
-                           } %>
-                        <div class="card p-4 group hover:border-indigo-300 dark:hover:border-indigo-700 transition-all">
-                            <div class="flex justify-between items-start mb-3">
-                                <div class="w-8 h-8 rounded-lg bg-slate-50 dark:bg-slate-900/60 flex items-center justify-center text-slate-450 group-hover:text-indigo-500 transition-colors">
-                                    <i class="fa-solid fa-wrench text-sm"></i>
+                <div class="max-h-[380px] overflow-y-auto pr-1 no-scrollbar">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+                        <% boolean hasApp = false;
+                           for (Appointment app : myApps) {
+                               hasApp = true;
+                               String statusText = app.getStatus();
+                               String cardCls = "bg-white dark:bg-slate-800/40 border-slate-200 dark:border-slate-700";
+                               String statusPill = "bg-amber-50 text-amber-600 border-amber-100 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-900/10";
+                               
+                               if ("Under Maintenance".equals(statusText)) {
+                                   statusPill = "bg-orange-50 text-orange-600 border-orange-100 dark:bg-orange-900/30 dark:text-orange-400 dark:border-orange-900/10";
+                               } else if ("Completed".equals(statusText)) {
+                                   statusPill = "bg-emerald-50 text-emerald-600 border-emerald-100 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-900/10";
+                               } %>
+                            <div class="card p-4 group hover:border-indigo-300 dark:hover:border-indigo-700 transition-all">
+                                <div class="flex justify-between items-start mb-3">
+                                    <div class="w-8 h-8 rounded-lg bg-slate-50 dark:bg-slate-900/60 flex items-center justify-center text-slate-450 group-hover:text-indigo-500 transition-colors">
+                                        <i class="fa-solid fa-wrench text-sm"></i>
+                                    </div>
+                                    <span class="text-[8px] font-black px-2 py-0.5 rounded-md border uppercase tracking-wider <%= statusPill %>"><%= statusText %></span>
                                 </div>
-                                <span class="text-[8px] font-black px-2 py-0.5 rounded-md border uppercase tracking-wider <%= statusPill %>"><%= statusText %></span>
-                            </div>
-                            <h3 class="font-black text-slate-800 dark:text-white text-sm"><%= app.getLicensePlate() %></h3>
-                            <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1 line-clamp-1"><%= app.getIssueDescription() %></p>
-                            
-                            <div class="mt-3 flex items-center gap-3 text-[10px] font-black text-slate-400">
-                                <span class="flex items-center gap-1"><i class="fa-regular fa-calendar text-indigo-500"></i> <%= app.getPreferredDate() %></span>
-                                <span class="flex items-center gap-1"><i class="fa-regular fa-clock text-indigo-500"></i> <%= app.getPreferredTime() %></span>
-                            </div>
-
-                            <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-750 flex gap-2">
-                                <% 
-                                    boolean isChatOpen = ChatManager.isChatWindowOpen(app.getCompletedDate(), 7);
-                                    if (isChatOpen) {
-                                        int unread = chatManager.getUnreadCountForUser(app.getAppointmentId(), "customer"); 
-                                        long daysLeft = ChatManager.getRemainingDays(app.getCompletedDate(), 7);
-                                Long rawDays = (daysLeft >= 0) ? daysLeft : 0L;
-                                %>
-                                <a href="appointment_chat.jsp?appId=<%= app.getAppointmentId() %>" class="relative flex-[0.3] flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-900/60 text-slate-500 hover:text-indigo-600 rounded-lg transition-all border border-transparent hover:border-indigo-100/50 py-1">
-                                    <i class="fa-solid fa-comments text-base"></i>
-                                    <% if ("Completed".equals(statusText)) { %>
-                                        <span class="text-[7px] font-black uppercase text-slate-400 mt-0.5"><%= rawDays %>d left</span>
-                                    <% } %>
-                                    <% if (unread > 0) { %>
-                                        <span class="absolute -top-1 -right-1 w-3.5 h-3.5 bg-rose-500 text-white rounded-full flex items-center justify-center text-[7px] animate-pulse"><%= unread %></span>
-                                    <% } %>
-                                </a>
-                                <% } else { %>
-                                <div class="relative flex-[0.3] flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-900/60 text-slate-400 rounded-lg py-1 opacity-50 cursor-not-allowed">
-                                    <i class="fa-solid fa-comments text-base"></i>
-                                    <span class="text-[7px] font-black uppercase text-slate-450 mt-0.5">Expired</span>
-                                </div>
-                                <% } %>
+                                <h3 class="font-black text-slate-800 dark:text-white text-sm"><%= app.getLicensePlate() %></h3>
+                                <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1 line-clamp-1"><%= app.getIssueDescription() %></p>
                                 
-                                <% if ("Pending".equals(statusText)) { %>
-                                    <a href="reschedule_appointment.jsp?id=<%= app.getAppointmentId() %>" class="flex-1 text-center bg-slate-50 dark:bg-slate-900/60 text-slate-700 dark:text-slate-300 hover:bg-indigo-600 hover:text-white text-[10px] font-black py-2 rounded-lg transition-all flex items-center justify-center uppercase tracking-wider">Reschedule</a>
-                                    <button type="button" onclick="openCancelAppModal('<%= app.getAppointmentId() %>')" class="flex-1 bg-slate-50 dark:bg-slate-900/60 text-red-500 hover:bg-red-500 hover:text-white text-[10px] font-black py-2 rounded-lg transition-all uppercase tracking-wider">Cancel</button>
-                                <% } else { %>
-                                    <button disabled class="flex-1 bg-slate-50 dark:bg-slate-900/30 text-slate-400 dark:text-slate-600 text-[10px] font-black py-2 rounded-lg cursor-not-allowed uppercase tracking-wider">Locked</button>
-                                <% } %>
+                                <div class="mt-3 flex items-center gap-3 text-[10px] font-black text-slate-400">
+                                    <span class="flex items-center gap-1"><i class="fa-regular fa-calendar text-indigo-500"></i> <%= app.getPreferredDate() %></span>
+                                    <span class="flex items-center gap-1"><i class="fa-regular fa-clock text-indigo-500"></i> <%= app.getPreferredTime() %></span>
+                                </div>
+
+                                <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-750 flex gap-2">
+                                    <% 
+                                        boolean isChatOpen = ChatManager.isChatWindowOpen(app.getCompletedDate(), 7);
+                                        if (isChatOpen) {
+                                            int unread = chatManager.getUnreadCountForUser(app.getAppointmentId(), "customer"); 
+                                            long daysLeft = ChatManager.getRemainingDays(app.getCompletedDate(), 7);
+                                    Long rawDays = (daysLeft >= 0) ? daysLeft : 0L;
+                                    %>
+                                    <a href="appointment_chat.jsp?appId=<%= app.getAppointmentId() %>" class="relative flex-[0.3] flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-900/60 text-slate-500 hover:text-indigo-600 rounded-lg transition-all border border-transparent hover:border-indigo-100/50 py-1">
+                                        <i class="fa-solid fa-comments text-base"></i>
+                                        <% if ("Completed".equals(statusText)) { %>
+                                            <span class="text-[7px] font-black uppercase text-slate-400 mt-0.5"><%= rawDays %>d left</span>
+                                        <% } %>
+                                        <% if (unread > 0) { %>
+                                            <span class="absolute -top-1 -right-1 w-3.5 h-3.5 bg-rose-500 text-white rounded-full flex items-center justify-center text-[7px] animate-pulse"><%= unread %></span>
+                                        <% } %>
+                                    </a>
+                                    <% } else { %>
+                                    <div class="relative flex-[0.3] flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-900/60 text-slate-400 rounded-lg py-1 opacity-50 cursor-not-allowed">
+                                        <i class="fa-solid fa-comments text-base"></i>
+                                        <span class="text-[7px] font-black uppercase text-slate-455 mt-0.5">Expired</span>
+                                    </div>
+                                    <% } %>
+                                    
+                                    <% if ("Pending".equals(statusText)) { %>
+                                        <a href="reschedule_appointment.jsp?id=<%= app.getAppointmentId() %>" class="flex-1 text-center bg-slate-50 dark:bg-slate-900/60 text-slate-700 dark:text-slate-300 hover:bg-indigo-600 hover:text-white text-[10px] font-black py-2 rounded-lg transition-all flex items-center justify-center uppercase tracking-wider">Reschedule</a>
+                                        <button type="button" onclick="openCancelAppModal('<%= app.getAppointmentId() %>')" class="flex-1 bg-slate-50 dark:bg-slate-900/60 text-red-500 hover:bg-red-500 hover:text-white text-[10px] font-black py-2 rounded-lg transition-all uppercase tracking-wider">Cancel</button>
+                                    <% } else { %>
+                                        <button disabled class="flex-1 bg-slate-50 dark:bg-slate-900/30 text-slate-400 dark:text-slate-600 text-[10px] font-black py-2 rounded-lg cursor-not-allowed uppercase tracking-wider">Locked</button>
+                                    <% } %>
+                                </div>
                             </div>
-                        </div>
-                    <% } if (!hasApp) { %>
-                        <div class="col-span-full bg-white dark:bg-slate-800/40 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-2xl p-6 text-center">
-                            <div class="w-12 h-12 bg-slate-50 dark:bg-slate-900 rounded-full flex items-center justify-center mx-auto mb-3">
-                                <i class="fa-regular fa-calendar text-slate-400 text-lg"></i>
+                        <% } if (!hasApp) { %>
+                            <div class="col-span-full bg-white dark:bg-slate-800/40 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-2xl p-6 text-center w-full">
+                                <div class="w-12 h-12 bg-slate-50 dark:bg-slate-900 rounded-full flex items-center justify-center mx-auto mb-3">
+                                    <i class="fa-regular fa-calendar text-slate-400 text-lg"></i>
+                                </div>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 font-bold">No active appointments found.</p>
+                                <a href="book_appointment.jsp" class="text-indigo-600 dark:text-indigo-400 text-[11px] font-black mt-1 inline-block hover:underline">Book your first service &rarr;</a>
                             </div>
-                            <p class="text-xs text-slate-500 dark:text-slate-400 font-bold">No active appointments found.</p>
-                            <a href="book_appointment.jsp" class="text-indigo-600 dark:text-indigo-400 text-[11px] font-black mt-1 inline-block hover:underline">Book your first service &rarr;</a>
-                        </div>
-                    <% } %>
+                        <% } %>
+                    </div>
                 </div>
             </section>
 
@@ -242,7 +244,7 @@
                     </h2>
                     <span class="text-[8px] font-black uppercase tracking-widest text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded-md">Recent Logs</span>
                 </div>
-                <div class="overflow-x-auto">
+                <div class="overflow-x-auto max-h-[250px] overflow-y-auto pr-1">
                     <table class="min-w-full">
                         <thead>
                             <tr class="bg-slate-50 dark:bg-slate-800/50">
@@ -310,7 +312,7 @@
                     </h2>
                     <a href="customer_vehicles.jsp" class="text-indigo-650 dark:text-indigo-400 hover:underline text-[10px] font-black uppercase tracking-wider">View All</a>
                 </div>
-                <div class="p-4 space-y-3">
+                <div class="p-4 max-h-[300px] overflow-y-auto space-y-3 pr-1">
                     <% boolean hasGarage = false; int vIdx=0;
                        for(Vehicle car : myCars) { hasGarage = true; String vId = "v" + vIdx++; %>
                         <div class="p-3 bg-slate-50 dark:bg-slate-900/40 rounded-xl border border-slate-100 dark:border-slate-800/50 group transition-all hover:bg-white dark:hover:bg-slate-800 hover:shadow-md hover:shadow-slate-200/40 dark:hover:shadow-none">
@@ -351,7 +353,7 @@
                         <i class="fa-solid fa-file-invoice-dollar text-indigo-600"></i> Recent Invoices
                     </h2>
                 </div>
-                <div class="p-4 space-y-3">
+                <div class="p-4 max-h-[260px] overflow-y-auto space-y-3 pr-1">
                     <% boolean hasBills = false; Stack<Invoice> allBills = new BillingManager().getAllInvoices();
                        for (int i = allBills.size() - 1; i >= 0 && i >= allBills.size()-5; i--) {
                            Invoice inv = allBills.get(i);
