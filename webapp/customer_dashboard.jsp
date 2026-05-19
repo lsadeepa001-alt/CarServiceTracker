@@ -244,7 +244,7 @@
                     </h2>
                     <span class="text-[8px] font-black uppercase tracking-widest text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded-md">Recent Logs</span>
                 </div>
-                <div class="overflow-x-auto max-h-[250px] overflow-y-auto pr-1">
+                <div class="overflow-x-auto max-h-[200px] overflow-y-auto pr-1">
                     <table class="min-w-full">
                         <thead>
                             <tr class="bg-slate-50 dark:bg-slate-800/50">
@@ -312,7 +312,7 @@
                     </h2>
                     <a href="customer_vehicles.jsp" class="text-indigo-650 dark:text-indigo-400 hover:underline text-[10px] font-black uppercase tracking-wider">View All</a>
                 </div>
-                <div class="p-4 max-h-[300px] overflow-y-auto space-y-3 pr-1">
+                <div class="p-4 max-h-[320px] overflow-y-auto space-y-3 pr-1">
                     <% boolean hasGarage = false; int vIdx=0;
                        for(Vehicle car : myCars) { hasGarage = true; String vId = "v" + vIdx++; %>
                         <div class="p-3 bg-slate-50 dark:bg-slate-900/40 rounded-xl border border-slate-100 dark:border-slate-800/50 group transition-all hover:bg-white dark:hover:bg-slate-800 hover:shadow-md hover:shadow-slate-200/40 dark:hover:shadow-none">
