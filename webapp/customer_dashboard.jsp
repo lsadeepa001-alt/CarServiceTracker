@@ -300,58 +300,58 @@
         </div>
 
         <!-- RIGHT COLUMN: GARAGE & BILLING (COL 4) -->
-        <div class="lg:col-span-4 space-y-8">
+        <div class="lg:col-span-4 space-y-6">
             
             <!-- GARAGE CARD -->
             <section class="card overflow-hidden">
-                <div class="px-6 py-5 border-b border-slate-100 dark:border-slate-700/50 flex justify-between items-center bg-slate-50/50 dark:bg-slate-800/30">
-                    <h2 class="text-sm font-black text-slate-800 dark:text-white uppercase tracking-widest flex items-center gap-2">
+                <div class="px-4 py-3.5 border-b border-slate-100 dark:border-slate-800/80 flex justify-between items-center bg-slate-50/50 dark:bg-slate-800/30">
+                    <h2 class="text-xs font-black text-slate-800 dark:text-white uppercase tracking-wider flex items-center gap-2">
                         <i class="fa-solid fa-warehouse text-indigo-600"></i> My Garage
                     </h2>
-                    <a href="customer_vehicles.jsp" class="text-indigo-600 dark:text-indigo-400 hover:underline text-[11px] font-bold">View All</a>
+                    <a href="customer_vehicles.jsp" class="text-indigo-650 dark:text-indigo-400 hover:underline text-[10px] font-black uppercase tracking-wider">View All</a>
                 </div>
-                <div class="p-6 space-y-4">
+                <div class="p-4 space-y-3">
                     <% boolean hasGarage = false; int vIdx=0;
                        for(Vehicle car : myCars) { hasGarage = true; String vId = "v" + vIdx++; %>
-                        <div class="p-4 bg-slate-50 dark:bg-slate-900/40 rounded-2xl border border-slate-100 dark:border-slate-800 group transition-all hover:bg-white dark:hover:bg-slate-800 hover:shadow-lg hover:shadow-slate-200/50 dark:hover:shadow-none">
-                            <div class="flex items-start gap-4">
-                                <div class="w-12 h-12 rounded-2xl bg-white dark:bg-slate-800 shadow-sm flex items-center justify-center text-slate-400 group-hover:text-indigo-500 transition-colors">
-                                    <i class="fa-solid fa-car text-xl"></i>
+                        <div class="p-3 bg-slate-50 dark:bg-slate-900/40 rounded-xl border border-slate-100 dark:border-slate-800/50 group transition-all hover:bg-white dark:hover:bg-slate-800 hover:shadow-md hover:shadow-slate-200/40 dark:hover:shadow-none">
+                            <div class="flex items-start gap-3">
+                                <div class="w-9 h-9 rounded-lg bg-white dark:bg-slate-800 shadow-sm flex items-center justify-center text-slate-400 group-hover:text-indigo-500 transition-colors">
+                                    <i class="fa-solid fa-car text-base"></i>
                                 </div>
                                 <div class="flex-1 min-w-0">
-                                    <h3 class="font-black text-slate-800 dark:text-white text-sm truncate"><%= car.getMake() %> <%= car.getModel() %></h3>
-                                    <div class="flex items-center gap-2 mt-2">
-                                        <span class="plate-tag text-[9px] bg-white dark:bg-slate-900 border-2 border-slate-900 dark:border-slate-100 text-slate-900 dark:text-white"><%= car.getLicensePlate() %></span>
-                                        <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500"><%= car.getMileage() %> KM</span>
+                                    <h3 class="font-black text-slate-800 dark:text-white text-xs truncate"><%= car.getMake() %> <%= car.getModel() %></h3>
+                                    <div class="flex items-center gap-1.5 mt-1.5">
+                                        <span class="plate-tag text-[8px] bg-white dark:bg-slate-900 border border-slate-900 dark:border-slate-100 text-slate-900 dark:text-white px-1.5 py-0.5 rounded"><%= car.getLicensePlate() %></span>
+                                        <span class="text-[9px] font-bold text-slate-400 dark:text-slate-500"><%= car.getMileage() %> KM</span>
                                     </div>
                                 </div>
                             </div>
-                            <div class="mt-4 pt-4 border-t border-slate-200/50 dark:border-slate-700/50 flex gap-2">
-                                <button onclick="toggleMileageForm('<%= vId %>')" class="flex-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 text-[10px] font-black py-2 rounded-xl transition-all">Update KM</button>
-                                <a href="customer_vehicles.jsp" class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 p-2 rounded-xl text-[10px] transition-all"><i class="fa-solid fa-chevron-right"></i></a>
+                            <div class="mt-3 pt-3 border-t border-slate-200/50 dark:border-slate-800 flex gap-1.5">
+                                <button onclick="toggleMileageForm('<%= vId %>')" class="flex-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-650 dark:text-slate-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 text-[9px] font-black py-1.5 rounded-lg transition-all uppercase tracking-wider">Update KM</button>
+                                <a href="customer_vehicles.jsp" class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-650 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 p-1.5 rounded-lg text-[9px] transition-all"><i class="fa-solid fa-chevron-right text-xs"></i></a>
                             </div>
                             <div id="<%= vId %>" style="max-height:0;overflow:hidden;transition:all 0.3s ease">
-                                <form action="UpdateMileageServlet" method="POST" class="mt-3 pt-3 flex gap-2 border-t border-dashed border-slate-200 dark:border-slate-700">
+                                <form action="UpdateMileageServlet" method="POST" class="mt-2 pt-2 flex gap-1.5 border-t border-dashed border-slate-200 dark:border-slate-850">
                                     <input type="hidden" name="plate" value="<%= car.getLicensePlate() %>">
-                                    <input type="number" name="mileage" min="0" required placeholder="<%= car.getMileage() %>" class="flex-1 bg-white dark:bg-slate-900 px-3 py-1.5 rounded-lg text-xs border border-slate-200 dark:border-slate-700 outline-none focus:ring-1 focus:ring-indigo-500 dark:text-white">
-                                    <button type="submit" class="bg-indigo-600 text-white text-[10px] font-bold px-4 py-1.5 rounded-lg">Save</button>
+                                    <input type="number" name="mileage" min="0" required placeholder="<%= car.getMileage() %>" class="flex-1 bg-white dark:bg-slate-900 px-2.5 py-1 rounded-lg text-[11px] border border-slate-200 dark:border-slate-700 outline-none focus:ring-1 focus:ring-indigo-500 dark:text-white">
+                                    <button type="submit" class="bg-indigo-600 text-white text-[9px] font-black px-3 py-1 rounded-lg uppercase tracking-wider">Save</button>
                                 </form>
                             </div>
                         </div>
                     <% } if(!hasGarage) { %>
-                        <div class="py-8 text-center"><i class="fa-solid fa-car-tunnel text-slate-400 dark:text-slate-800 text-4xl mb-3 block"></i><p class="text-xs text-slate-500 dark:text-slate-500 font-bold">No vehicles in your garage.</p></div>
+                        <div class="py-6 text-center"><i class="fa-solid fa-car-tunnel text-slate-450 dark:text-slate-850 text-3xl mb-2 block"></i><p class="text-[10px] text-slate-500 dark:text-slate-450 font-black uppercase tracking-wider">No vehicles in garage.</p></div>
                     <% } %>
                 </div>
             </section>
 
             <!-- RECENT BILLING -->
             <section class="card overflow-hidden">
-                <div class="px-6 py-5 border-b border-slate-100 dark:border-slate-700/50 flex justify-between items-center bg-slate-50/50 dark:bg-slate-800/30">
-                    <h2 class="text-sm font-black text-slate-800 dark:text-white uppercase tracking-widest flex items-center gap-2">
+                <div class="px-4 py-3.5 border-b border-slate-100 dark:border-slate-800/80 flex justify-between items-center bg-slate-50/50 dark:bg-slate-800/30">
+                    <h2 class="text-xs font-black text-slate-800 dark:text-white uppercase tracking-wider flex items-center gap-2">
                         <i class="fa-solid fa-file-invoice-dollar text-indigo-600"></i> Recent Invoices
                     </h2>
                 </div>
-                <div class="p-6 space-y-4">
+                <div class="p-4 space-y-3">
                     <% boolean hasBills = false; Stack<Invoice> allBills = new BillingManager().getAllInvoices();
                        for (int i = allBills.size() - 1; i >= 0 && i >= allBills.size()-5; i--) {
                            Invoice inv = allBills.get(i);
@@ -359,18 +359,18 @@
                                hasBills = true;
                                String statusCls = "PAID".equals(inv.getStatus()) ? "text-emerald-500 bg-emerald-50 dark:bg-emerald-900/30 border-emerald-100 dark:border-emerald-800/50" : "text-rose-500 bg-rose-50 dark:bg-rose-900/30 border-rose-100 dark:border-rose-800/50";
                     %>
-                        <div class="flex justify-between items-center p-3 border-b border-slate-50 dark:border-slate-800 last:border-0 group">
+                        <div class="flex justify-between items-center p-2.5 border-b border-slate-50 dark:border-slate-850 last:border-0 group">
                             <div class="min-w-0">
-                                <p class="text-xs font-black text-slate-800 dark:text-white truncate"><%= inv.getServiceDescription() %></p>
-                                <p class="text-[9px] font-bold text-slate-400 mt-0.5"><%= inv.getInvoiceId() %> &bull; <%= inv.getLicensePlate() %></p>
+                                <p class="text-xs font-bold text-slate-805 dark:text-white truncate leading-tight"><%= inv.getServiceDescription() %></p>
+                                <p class="text-[9px] font-bold text-slate-400 mt-1 leading-none"><%= inv.getInvoiceId() %> &bull; <%= inv.getLicensePlate() %></p>
                             </div>
                             <div class="text-right">
-                                <p class="text-xs font-black text-slate-900 dark:text-white">LKR <%= String.format("%,.0f", inv.getTotalAmount()) %></p>
-                                <span class="text-[8px] font-black uppercase px-1.5 py-0.5 rounded border inline-block mt-1 <%= statusCls %>"><%= inv.getStatus() %></span>
+                                <p class="text-xs font-black text-slate-900 dark:text-white leading-none">LKR <%= String.format("%,.0f", inv.getTotalAmount()) %></p>
+                                <span class="text-[7px] font-black uppercase px-1.5 py-0.5 rounded border inline-block mt-1 tracking-wider <%= statusCls %>"><%= inv.getStatus() %></span>
                             </div>
                         </div>
                     <% } } if(!hasBills) { %>
-                        <div class="py-8 text-center"><i class="fa-solid fa-receipt text-slate-400 dark:text-slate-800 text-4xl mb-3 block"></i><p class="text-xs text-slate-500 dark:text-slate-500 font-bold">No billing activity yet.</p></div>
+                        <div class="py-6 text-center"><i class="fa-solid fa-receipt text-slate-450 dark:text-slate-850 text-3xl mb-2 block"></i><p class="text-[10px] text-slate-500 dark:text-slate-450 font-black uppercase tracking-wider">No billing activity.</p></div>
                     <% } %>
                 </div>
             </section>
@@ -379,84 +379,84 @@
 </div>
 
 <!-- MODAL OVERLAY -->
-<div id="historyModal" class="hidden fixed inset-0 z-[60] flex items-start justify-center p-4 overflow-y-auto no-scrollbar">
-    <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity" onclick="closeHistoryModal()"></div>
-    <div class="modal-panel relative bg-white dark:bg-slate-900 rounded-[3rem] shadow-2xl max-w-lg w-full p-12 border border-slate-200 dark:border-slate-700 my-12" id="hModalPanel">
+<div id="historyModal" class="hidden fixed inset-0 z-[60] flex items-center justify-center p-4 overflow-y-auto no-scrollbar">
+    <div class="fixed inset-0 bg-slate-950/40 backdrop-blur-sm transition-opacity" onclick="closeHistoryModal()"></div>
+    <div class="modal-panel relative bg-white dark:bg-slate-900 rounded-2xl shadow-2xl max-w-md w-full p-6 border border-slate-200 dark:border-slate-800 my-8" id="hModalPanel">
         
-        <div class="flex justify-between items-start mb-10">
-            <div class="flex items-center gap-4">
-                <div class="w-14 h-14 rounded-2xl bg-indigo-600 flex items-center justify-center text-white shadow-xl shadow-indigo-200 dark:shadow-none">
-                    <i class="fa-solid fa-book-open text-2xl"></i>
+        <div class="flex justify-between items-start mb-6">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-indigo-650 flex items-center justify-center text-white shadow-sm">
+                    <i class="fa-solid fa-book-open text-lg"></i>
                 </div>
                 <div>
-                    <h3 class="text-2xl font-black text-slate-900 dark:text-white">Service History Details</h3>
-                    <p id="modalDate" class="text-sm font-bold text-slate-400"></p>
+                    <h3 class="text-sm font-black text-slate-900 dark:text-white uppercase tracking-wider">Service History Details</h3>
+                    <p id="modalDate" class="text-[10px] font-black text-slate-400 mt-0.5"></p>
                 </div>
             </div>
-            <button onclick="closeHistoryModal()" class="w-10 h-10 rounded-2xl bg-slate-50 dark:bg-slate-800 hover:bg-red-50 dark:hover:bg-red-900/30 text-slate-400 hover:text-red-500 transition-all flex items-center justify-center">
-                <i class="fa-solid fa-xmark text-lg"></i>
+            <button onclick="closeHistoryModal()" class="w-7 h-7 rounded-lg bg-slate-50 dark:bg-slate-800 hover:bg-red-50 dark:hover:bg-red-900/30 text-slate-400 hover:text-red-500 transition-all flex items-center justify-center">
+                <i class="fa-solid fa-xmark text-sm"></i>
             </button>
         </div>
 
-        <div class="space-y-6">
-            <div class="grid grid-cols-2 gap-4">
-                <div class="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-3xl border border-slate-100 dark:border-slate-700/50">
-                    <span class="text-[9px] font-black uppercase text-slate-400 tracking-widest block mb-1">Vehicle</span>
-                    <span id="modalPlate" class="plate-tag text-xs font-black bg-white dark:bg-slate-900 border-2 border-slate-900 dark:border-slate-100"></span>
+        <div class="space-y-4">
+            <div class="grid grid-cols-2 gap-3">
+                <div class="bg-slate-50 dark:bg-slate-800/40 p-3 rounded-xl border border-slate-100 dark:border-slate-800/40">
+                    <span class="text-[8px] font-black uppercase text-slate-400 tracking-widest block mb-1">Vehicle</span>
+                    <span id="modalPlate" class="plate-tag text-[9px] font-black bg-white dark:bg-slate-900 border border-slate-900 dark:border-slate-100"></span>
                 </div>
-                <div class="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-3xl border border-slate-100 dark:border-slate-700/50">
-                    <span class="text-[9px] font-black uppercase text-slate-400 tracking-widest block mb-1">Type</span>
-                    <span id="modalService" class="text-sm font-black text-slate-800 dark:text-white"></span>
+                <div class="bg-slate-50 dark:bg-slate-800/40 p-3 rounded-xl border border-slate-100 dark:border-slate-800/40">
+                    <span class="text-[8px] font-black uppercase text-slate-400 tracking-widest block mb-1">Type</span>
+                    <span id="modalService" class="text-xs font-black text-slate-800 dark:text-white block truncate"></span>
                 </div>
             </div>
 
-            <div class="p-5 bg-indigo-600 rounded-[2rem] text-white flex justify-between items-center shadow-2xl shadow-indigo-500/20">
+            <div class="p-3.5 bg-indigo-600 rounded-xl text-white flex justify-between items-center shadow-md">
                 <div>
-                    <span class="text-[10px] font-black uppercase tracking-widest text-indigo-200 block mb-1">Total Paid</span>
-                    <span id="modalCost" class="text-2xl font-black"></span>
+                    <span class="text-[8px] font-black uppercase tracking-widest text-indigo-200 block mb-0.5">Total Paid</span>
+                    <span id="modalCost" class="text-lg font-black"></span>
                 </div>
-                <i class="fa-solid fa-check-double text-3xl text-indigo-400/50"></i>
+                <i class="fa-solid fa-check-double text-xl text-indigo-400/50"></i>
             </div>
 
-            <div class="bg-slate-50 dark:bg-slate-800/50 p-5 rounded-3xl border border-slate-100 dark:border-slate-700/50">
-                <span class="text-[9px] font-black uppercase text-slate-400 tracking-widest block mb-2"><i class="fa-solid fa-layer-group mr-1 text-indigo-500"></i>Parts & Service Details</span>
-                <p id="modalParts" class="text-sm font-bold text-slate-700 dark:text-slate-300 leading-relaxed"></p>
+            <div class="bg-slate-50 dark:bg-slate-800/40 p-3.5 rounded-xl border border-slate-100 dark:border-slate-800/40">
+                <span class="text-[8px] font-black uppercase text-slate-400 tracking-widest block mb-1.5"><i class="fa-solid fa-layer-group mr-1 text-indigo-500"></i>Parts & Service Details</span>
+                <p id="modalParts" class="text-xs font-bold text-slate-700 dark:text-slate-300 leading-relaxed"></p>
             </div>
 
             <!-- FEEDBACK BLOCK -->
-            <div id="feedbackFormBlock" class="pt-2">
-                <h4 class="text-lg font-black text-slate-900 dark:text-white mb-4">Rate your experience</h4>
-                <form action="SubmitFeedbackServlet" method="POST" id="mainFeedbackForm" class="space-y-4">
+            <div id="feedbackFormBlock" class="pt-1">
+                <h4 class="text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider mb-2.5">Rate your experience</h4>
+                <form action="SubmitFeedbackServlet" method="POST" id="mainFeedbackForm" class="space-y-3">
                     <input type="hidden" name="serviceRef" id="feedbackServiceRef">
                     <input type="hidden" name="feedbackId" id="editFeedbackId">
-                    <div class="rating-stars mb-4">
-                        <input type="radio" id="star5" name="rating" value="5" required/><label for="star5"><i class="fa-solid fa-star"></i></label>
-                        <input type="radio" id="star4" name="rating" value="4"/><label for="star4"><i class="fa-solid fa-star"></i></label>
-                        <input type="radio" id="star3" name="rating" value="3"/><label for="star3"><i class="fa-solid fa-star"></i></label>
-                        <input type="radio" id="star2" name="rating" value="2"/><label for="star2"><i class="fa-solid fa-star"></i></label>
-                        <input type="radio" id="star1" name="rating" value="1"/><label for="star1"><i class="fa-solid fa-star"></i></label>
+                    <div class="rating-stars mb-2">
+                        <input type="radio" id="star5" name="rating" value="5" required/><label for="star5" class="text-base"><i class="fa-solid fa-star"></i></label>
+                        <input type="radio" id="star4" name="rating" value="4"/><label for="star4" class="text-base"><i class="fa-solid fa-star"></i></label>
+                        <input type="radio" id="star3" name="rating" value="3"/><label for="star3" class="text-base"><i class="fa-solid fa-star"></i></label>
+                        <input type="radio" id="star2" name="rating" value="2"/><label for="star2" class="text-base"><i class="fa-solid fa-star"></i></label>
+                        <input type="radio" id="star1" name="rating" value="1"/><label for="star1" class="text-base"><i class="fa-solid fa-star"></i></label>
                     </div>
-                    <textarea name="message" id="feedbackMessageArea" rows="3" class="w-full bg-slate-50 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 rounded-3xl p-4 text-sm font-medium focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all dark:text-white" placeholder="Any comments for our team?"></textarea>
-                    <button type="submit" id="feedbackSubmitBtn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-black py-4 rounded-3xl shadow-xl shadow-indigo-200 dark:shadow-none transition-all hover:scale-[1.02] active:scale-[0.98]">Post Review</button>
+                    <textarea name="message" id="feedbackMessageArea" rows="2" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-3 text-xs font-medium focus:ring-1 focus:ring-indigo-500/30 focus:border-indigo-500 outline-none transition-all dark:text-white" placeholder="Any comments for our team?"></textarea>
+                    <button type="submit" id="feedbackSubmitBtn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-black py-2.5 rounded-xl shadow-sm text-[10px] uppercase tracking-wider transition-all hover:scale-[1.01] active:scale-[0.99]">Post Review</button>
                 </form>
             </div>
 
-            <div id="feedbackSubmittedBlock" class="hidden pt-2">
-                <div class="flex items-center justify-between mb-4">
-                    <h4 class="text-lg font-black text-slate-900 dark:text-white flex items-center gap-2">
+            <div id="feedbackSubmittedBlock" class="hidden pt-1">
+                <div class="flex items-center justify-between mb-2.5">
+                    <h4 class="text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-1.5">
                         <i class="fa-solid fa-circle-check text-emerald-500"></i> Feedback Posted
                     </h4>
-                    <div class="flex gap-4">
-                        <button onclick="enableFeedbackEdit()" class="text-xs font-black text-indigo-600 dark:text-indigo-400 hover:underline">Edit</button>
-                        <button type="button" onclick="openDeleteFeedbackModal()" class="text-xs font-black text-red-500 hover:underline">Delete</button>
+                    <div class="flex gap-3">
+                        <button onclick="enableFeedbackEdit()" class="text-[10px] font-black text-indigo-600 dark:text-indigo-400 hover:underline uppercase tracking-wider">Edit</button>
+                        <button type="button" onclick="openDeleteFeedbackModal()" class="text-[10px] font-black text-red-500 hover:underline uppercase tracking-wider">Delete</button>
                     </div>
                 </div>
-                <div class="bg-slate-50 dark:bg-slate-800/80 p-6 rounded-[2rem] border border-slate-100 dark:border-slate-700">
-                    <div class="flex items-center gap-2 mb-4"><span class="text-[10px] font-black uppercase text-slate-400 tracking-widest">Rating:</span><div class="flex text-yellow-500 gap-1 text-sm" id="modalDisplayStars"></div></div>
-                    <p id="modalUserComment" class="text-sm font-bold text-slate-700 dark:text-slate-300 italic"></p>
-                    <div id="modalAdminReplyBlock" class="mt-4 pt-4 border-t border-slate-200/50 dark:border-slate-700">
-                        <span class="text-[10px] font-black uppercase text-indigo-500 tracking-widest block mb-2">Team SwiftDrive Reply:</span>
-                        <p class="text-sm font-black text-indigo-700 dark:text-indigo-300 bg-white dark:bg-indigo-900/30 p-4 rounded-2xl border border-indigo-100 dark:border-indigo-800/50" id="modalAdminReplyText"></p>
+                <div class="bg-slate-50 dark:bg-slate-800/40 p-4 rounded-xl border border-slate-100 dark:border-slate-800/40">
+                    <div class="flex items-center gap-1.5 mb-2.5"><span class="text-[8px] font-black uppercase text-slate-400 tracking-widest">Rating:</span><div class="flex text-yellow-500 gap-0.5 text-xs" id="modalDisplayStars"></div></div>
+                    <p id="modalUserComment" class="text-xs font-bold text-slate-700 dark:text-slate-300 italic leading-relaxed"></p>
+                    <div id="modalAdminReplyBlock" class="mt-3 pt-3 border-t border-slate-200/50 dark:border-slate-800">
+                        <span class="text-[8px] font-black uppercase text-indigo-500 tracking-widest block mb-1.5">Team SwiftDrive Reply:</span>
+                        <p class="text-xs font-black text-indigo-700 dark:text-indigo-300 bg-white dark:bg-indigo-900/30 p-3 rounded-lg border border-indigo-100 dark:border-indigo-900/40" id="modalAdminReplyText"></p>
                     </div>
                 </div>
             </div>
@@ -557,24 +557,24 @@ function closeDeleteFeedbackModal() {
 </script>
 
 <!-- CANCEL APPOINTMENT MODAL -->
-<div id="cancelAppModal" class="hidden fixed inset-0 z-[200] flex items-center justify-center p-6">
-    <div class="absolute inset-0 bg-slate-950/80 backdrop-blur-xl opacity-0 transition-opacity duration-300" id="cancelAppBackdrop" onclick="closeCancelAppModal()"></div>
-    <div class="relative bg-white dark:bg-slate-900 rounded-[3rem] shadow-2xl max-w-sm w-full border border-slate-100 dark:border-slate-800 overflow-hidden transform scale-95 opacity-0 transition-all duration-300" id="cancelAppPanel">
-        <div class="p-12 text-center">
-            <div class="w-24 h-24 rounded-[2rem] bg-rose-50 dark:bg-rose-950 flex items-center justify-center mx-auto mb-10 text-rose-500 shadow-inner border border-rose-100 dark:border-rose-900/30">
-                <i class="fa-solid fa-trash-can text-4xl"></i>
+<div id="cancelAppModal" class="hidden fixed inset-0 z-[200] flex items-center justify-center p-4">
+    <div class="absolute inset-0 bg-slate-950/60 backdrop-blur-sm opacity-0 transition-opacity duration-300" id="cancelAppBackdrop" onclick="closeCancelAppModal()"></div>
+    <div class="relative bg-white dark:bg-slate-900 rounded-2xl shadow-2xl max-w-xs w-full border border-slate-100 dark:border-slate-800 overflow-hidden transform scale-95 opacity-0 transition-all duration-300" id="cancelAppPanel">
+        <div class="p-6 text-center">
+            <div class="w-14 h-14 rounded-xl bg-rose-50 dark:bg-rose-950/30 flex items-center justify-center mx-auto mb-4 text-rose-500 shadow-inner border border-rose-100 dark:border-rose-900/30">
+                <i class="fa-solid fa-trash-can text-xl"></i>
             </div>
-            <h3 class="text-3xl font-black text-slate-900 dark:text-white tracking-tighter">Cancel Appointment?</h3>
-            <p class="text-sm font-medium text-slate-500 dark:text-slate-400 mt-4 leading-relaxed">
-                Are you sure you want to cancel the appointment <span id="cancelAppDisplay" class="font-bold text-slate-900 dark:text-white"></span>?
+            <h3 class="text-base font-black text-slate-900 dark:text-white uppercase tracking-wider">Cancel Appointment?</h3>
+            <p class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-2 leading-relaxed">
+                Are you sure you want to cancel appointment <span id="cancelAppDisplay" class="font-bold text-slate-900 dark:text-white"></span>?
             </p>
             
-            <form action="CancelAppointmentServlet" method="POST" class="flex flex-col gap-4 mt-10">
+            <form action="CancelAppointmentServlet" method="POST" class="flex flex-col gap-2 mt-6">
                 <input type="hidden" name="appointmentId" id="cancelAppIdInput">
-                <button type="submit" class="w-full py-5 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white font-black text-[10px] uppercase tracking-[0.2em] shadow-2xl shadow-rose-100 dark:shadow-none transition-all active:scale-95 flex items-center justify-center gap-4">
-                    <i class="fa-solid fa-trash-can text-lg"></i> Confirm & Cancel
+                <button type="submit" class="w-full py-2.5 rounded-lg bg-rose-600 hover:bg-rose-700 text-white font-black text-[9px] uppercase tracking-wider transition-all active:scale-95 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-trash-can text-sm"></i> Confirm & Cancel
                 </button>
-                <button type="button" onclick="closeCancelAppModal()" class="w-full py-5 rounded-2xl bg-white dark:bg-slate-950 border-2 border-slate-100 dark:border-slate-800 text-slate-400 dark:text-slate-700 font-black text-[10px] uppercase tracking-[0.2em] hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">
+                <button type="button" onclick="closeCancelAppModal()" class="w-full py-2.5 rounded-lg bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-450 font-black text-[9px] uppercase tracking-wider hover:bg-slate-50 dark:hover:bg-slate-900 transition-all">
                     Keep Appointment
                 </button>
             </form>
@@ -583,24 +583,24 @@ function closeDeleteFeedbackModal() {
 </div>
 
 <!-- DELETE FEEDBACK MODAL -->
-<div id="deleteFeedbackModal" class="hidden fixed inset-0 z-[300] flex items-center justify-center p-6">
-    <div class="absolute inset-0 bg-slate-950/80 backdrop-blur-xl opacity-0 transition-opacity duration-300" id="deleteFeedbackBackdrop" onclick="closeDeleteFeedbackModal()"></div>
-    <div class="relative bg-white dark:bg-slate-900 rounded-[3rem] shadow-2xl max-w-sm w-full border border-slate-100 dark:border-slate-800 overflow-hidden transform scale-95 opacity-0 transition-all duration-300" id="deleteFeedbackPanel">
-        <div class="p-12 text-center">
-            <div class="w-24 h-24 rounded-[2rem] bg-rose-50 dark:bg-rose-950 flex items-center justify-center mx-auto mb-10 text-rose-500 shadow-inner border border-rose-100 dark:border-rose-900/30">
-                <i class="fa-solid fa-trash-can text-4xl"></i>
+<div id="deleteFeedbackModal" class="hidden fixed inset-0 z-[300] flex items-center justify-center p-4">
+    <div class="absolute inset-0 bg-slate-950/60 backdrop-blur-sm opacity-0 transition-opacity duration-300" id="deleteFeedbackBackdrop" onclick="closeDeleteFeedbackModal()"></div>
+    <div class="relative bg-white dark:bg-slate-900 rounded-2xl shadow-2xl max-w-xs w-full border border-slate-100 dark:border-slate-800 overflow-hidden transform scale-95 opacity-0 transition-all duration-300" id="deleteFeedbackPanel">
+        <div class="p-6 text-center">
+            <div class="w-14 h-14 rounded-xl bg-rose-50 dark:bg-rose-950/30 flex items-center justify-center mx-auto mb-4 text-rose-500 shadow-inner border border-rose-100 dark:border-rose-900/30">
+                <i class="fa-solid fa-trash-can text-xl"></i>
             </div>
-            <h3 class="text-3xl font-black text-slate-900 dark:text-white tracking-tighter">Delete Review?</h3>
-            <p class="text-sm font-medium text-slate-500 dark:text-slate-400 mt-4 leading-relaxed">
+            <h3 class="text-base font-black text-slate-900 dark:text-white uppercase tracking-wider">Delete Review?</h3>
+            <p class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-2 leading-relaxed">
                 Are you sure you want to permanently delete this review? This action cannot be undone.
             </p>
             
-            <form action="DeleteFeedbackServlet" method="POST" class="flex flex-col gap-4 mt-10">
+            <form action="DeleteFeedbackServlet" method="POST" class="flex flex-col gap-2 mt-6">
                 <input type="hidden" name="feedbackId" id="deleteFeedbackModalInput">
-                <button type="submit" class="w-full py-5 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white font-black text-[10px] uppercase tracking-[0.2em] shadow-2xl shadow-rose-100 dark:shadow-none transition-all active:scale-95 flex items-center justify-center gap-4">
+                <button type="submit" class="w-full py-2.5 rounded-lg bg-rose-600 hover:bg-rose-700 text-white font-black text-[9px] uppercase tracking-wider transition-all active:scale-95 flex items-center justify-center gap-2">
                     Confirm & Delete
                 </button>
-                <button type="button" onclick="closeDeleteFeedbackModal()" class="w-full py-5 rounded-2xl bg-white dark:bg-slate-950 border-2 border-slate-100 dark:border-slate-800 text-slate-400 dark:text-slate-700 font-black text-[10px] uppercase tracking-[0.2em] hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">
+                <button type="button" onclick="closeDeleteFeedbackModal()" class="w-full py-2.5 rounded-lg bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-450 font-black text-[9px] uppercase tracking-wider hover:bg-slate-50 dark:hover:bg-slate-900 transition-all">
                     Cancel
                 </button>
             </form>

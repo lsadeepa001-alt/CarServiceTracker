@@ -1,4 +1,5 @@
-APP-7D714B4A|Kasun@123|CPR-4567|2026-05-20|12:00|Sports Car Performance Tuning|Pending|none
+APP-7D714B4A|Kasun@123|CPR-4567|2026-05-20|12:00|Sports Car Performance Tuning|Under Maintenance|none
+APP-7D714B4A|Kasun@123|CPR-4567|2026-05-20|12:00|Sports Car Performance Tuning|Completed|none
 APP-CCF7314D|Kasun@123|CPR-4567|2026-05-22|12:00|SUV Heavy Duty Maintenance|Pending|none
 APP-BCDD26F5|Kavi@123|CPR-4567|2026-05-18|10:00|Standard Sedan Service|Under Maintenance|none
 APP-18044|sahab|CBA-1234|2026-05-20|21:19|Hybrid System Check & Maintenance|Completed|none
