@@ -113,121 +113,122 @@
 <body class="antialiased text-slate-900 dark:text-slate-100 bg-slate-50 dark:bg-slate-950 transition-colors duration-300">
 <%@ include file="customer_navbar.jsp" %>
 
-<div class="max-w-7xl mx-auto py-10 px-4 pt-28">
+<div class="max-w-7xl mx-auto py-6 px-4 pt-24">
 
     <!-- WELCOME HEADER -->
-    <div class="mb-10 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+    <div class="mb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-            <h1 class="text-4xl font-black tracking-tight text-slate-900 dark:text-white">
+            <h1 class="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-white leading-none">
                 Welcome back, <span class="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-violet-600"><%= username %></span>!
             </h1>
-            <p class="text-slate-500 dark:text-slate-400 text-base mt-2 font-medium">Manage your vehicles, book services, and track maintenance history.</p>
+            <p class="text-slate-500 dark:text-slate-400 text-xs sm:text-sm mt-1.5 font-medium">Manage your vehicles, book services, and track maintenance history.</p>
             
             <% if (userObj instanceof CustomerUser) {
                 CustomerUser cUser = (CustomerUser) userObj;
                 if (cUser.getServiceDiscount() > 0) { %>
-                <div class="mt-4 inline-flex items-center gap-2 bg-indigo-50 dark:bg-indigo-900/30 border border-indigo-100 dark:border-indigo-800/50 text-indigo-700 dark:text-indigo-300 px-4 py-2 rounded-2xl text-xs font-bold uppercase tracking-wider">
-                    <i class="fa-solid fa-crown text-amber-500"></i> <%= cUser.getMembershipTier() %> &bull; <%=(int)(cUser.getServiceDiscount() * 100)%>% Exclusive Discount
+                <div class="mt-2.5 inline-flex items-center gap-1.5 bg-indigo-50 dark:bg-indigo-900/30 border border-indigo-100 dark:border-indigo-800/50 text-indigo-750 dark:text-indigo-300 px-3 py-1 rounded-xl text-[9px] font-black uppercase tracking-wider">
+                    <i class="fa-solid fa-crown text-amber-500"></i> <%= cUser.getMembershipTier() %> &bull; <%=(int)(cUser.getServiceDiscount() * 100)%>% Discount
                 </div>
             <% } } %>
         </div>
         
-        <div class="flex gap-3">
-            <div class="bg-white dark:bg-slate-800/50 backdrop-blur-md p-4 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center gap-4">
-                <div class="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-900/40 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
-                    <i class="fa-solid fa-car-side text-xl"></i>
+        <div class="flex gap-2">
+            <div class="bg-white dark:bg-slate-800/50 backdrop-blur-md p-3 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-900/40 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
+                    <i class="fa-solid fa-car-side text-lg"></i>
                 </div>
                 <div>
-                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Your Fleet</p>
-                    <p class="text-xl font-black text-slate-800 dark:text-white"><%= myCars.size() %> Vehicles</p>
+                    <p class="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none">Fleet Size</p>
+                    <p class="text-base font-black text-slate-850 dark:text-white mt-1 leading-none"><%= myCars.size() %> Vehicles</p>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- MAIN DASHBOARD GRID -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
         <!-- LEFT/CENTER: HISTORY & APPOINTMENTS (COL 8) -->
-        <div class="lg:col-span-8 space-y-8">
+        <div class="lg:col-span-8 space-y-6">
             
             <!-- APPOINTMENTS SECTION -->
             <section>
-                <div class="flex items-center justify-between mb-4 px-2">
-                    <h2 class="text-lg font-black text-slate-800 dark:text-white flex items-center gap-2">
+                <div class="flex items-center justify-between mb-3 px-1">
+                    <h2 class="text-sm font-black text-slate-800 dark:text-white flex items-center gap-2">
                         <i class="fa-regular fa-calendar-check text-indigo-600"></i> Upcoming Appointments
                     </h2>
-                    <a href="book_appointment.jsp" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-5 py-2.5 rounded-xl shadow-lg shadow-indigo-200 dark:shadow-none transition-all hover:-translate-y-0.5">
-                        <i class="fa-solid fa-calendar-plus mr-2"></i>Book New
+                    <a href="book_appointment.jsp" class="bg-indigo-600 hover:bg-indigo-700 text-white text-[9px] font-black px-4 py-2 rounded-lg shadow-sm transition-all hover:-translate-y-0.5 uppercase tracking-wider">
+                        <i class="fa-solid fa-calendar-plus mr-1"></i>Book New
                     </a>
                 </div>
                 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
                     <% boolean hasApp = false;
                        for (Appointment app : myApps) {
                            hasApp = true;
                            String statusText = app.getStatus();
                            String cardCls = "bg-white dark:bg-slate-800/40 border-slate-200 dark:border-slate-700";
-                           String statusPill = "bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800/50";
+                           String statusPill = "bg-amber-50 text-amber-600 border-amber-100 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-900/10";
                            
                            if ("Under Maintenance".equals(statusText)) {
-                               statusPill = "bg-orange-100 text-orange-700 border-orange-200 dark:bg-orange-900/30 dark:text-orange-400 dark:border-orange-800/50";
+                               statusPill = "bg-orange-50 text-orange-600 border-orange-100 dark:bg-orange-900/30 dark:text-orange-400 dark:border-orange-900/10";
                            } else if ("Completed".equals(statusText)) {
-                               statusPill = "bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-800/50";
+                               statusPill = "bg-emerald-50 text-emerald-600 border-emerald-100 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-900/10";
                            } %>
-                        <div class="card p-5 group hover:border-indigo-300 dark:hover:border-indigo-700 transition-all">
-                            <div class="flex justify-between items-start mb-4">
-                                <div class="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-900/60 flex items-center justify-center text-slate-400 group-hover:text-indigo-500 transition-colors">
-                                    <i class="fa-solid fa-wrench"></i>
+                        <div class="card p-4 group hover:border-indigo-300 dark:hover:border-indigo-700 transition-all">
+                            <div class="flex justify-between items-start mb-3">
+                                <div class="w-8 h-8 rounded-lg bg-slate-50 dark:bg-slate-900/60 flex items-center justify-center text-slate-450 group-hover:text-indigo-500 transition-colors">
+                                    <i class="fa-solid fa-wrench text-sm"></i>
                                 </div>
-                                <span class="text-[10px] font-black px-2.5 py-1 rounded-lg border uppercase tracking-wider <%= statusPill %>"><%= statusText %></span>
+                                <span class="text-[8px] font-black px-2 py-0.5 rounded-md border uppercase tracking-wider <%= statusPill %>"><%= statusText %></span>
                             </div>
-                            <h3 class="font-black text-slate-800 dark:text-white text-lg"><%= app.getLicensePlate() %></h3>
-                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-1"><%= app.getIssueDescription() %></p>
+                            <h3 class="font-black text-slate-800 dark:text-white text-sm"><%= app.getLicensePlate() %></h3>
+                            <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1 line-clamp-1"><%= app.getIssueDescription() %></p>
                             
-                            <div class="mt-4 flex items-center gap-4 text-xs font-bold text-slate-400">
-                                <span class="flex items-center gap-1.5"><i class="fa-regular fa-calendar text-indigo-500"></i> <%= app.getPreferredDate() %></span>
-                                <span class="flex items-center gap-1.5"><i class="fa-regular fa-clock text-indigo-500"></i> <%= app.getPreferredTime() %></span>
+                            <div class="mt-3 flex items-center gap-3 text-[10px] font-black text-slate-400">
+                                <span class="flex items-center gap-1"><i class="fa-regular fa-calendar text-indigo-500"></i> <%= app.getPreferredDate() %></span>
+                                <span class="flex items-center gap-1"><i class="fa-regular fa-clock text-indigo-500"></i> <%= app.getPreferredTime() %></span>
                             </div>
 
-                            <div class="mt-5 pt-4 border-t border-slate-100 dark:border-slate-700/50 flex gap-2">
+                            <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-750 flex gap-2">
                                 <% 
                                     boolean isChatOpen = ChatManager.isChatWindowOpen(app.getCompletedDate(), 7);
                                     if (isChatOpen) {
                                         int unread = chatManager.getUnreadCountForUser(app.getAppointmentId(), "customer"); 
                                         long daysLeft = ChatManager.getRemainingDays(app.getCompletedDate(), 7);
+                                Long rawDays = (daysLeft >= 0) ? daysLeft : 0L;
                                 %>
-                                <a href="appointment_chat.jsp?appId=<%= app.getAppointmentId() %>" class="relative flex-[0.3] flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-800 text-slate-500 hover:text-indigo-600 rounded-xl transition-all border border-transparent hover:border-indigo-100 py-1">
-                                    <i class="fa-solid fa-comments text-lg"></i>
+                                <a href="appointment_chat.jsp?appId=<%= app.getAppointmentId() %>" class="relative flex-[0.3] flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-900/60 text-slate-500 hover:text-indigo-600 rounded-lg transition-all border border-transparent hover:border-indigo-100/50 py-1">
+                                    <i class="fa-solid fa-comments text-base"></i>
                                     <% if ("Completed".equals(statusText)) { %>
-                                        <span class="text-[8px] font-black uppercase text-slate-400 mt-1"><%= daysLeft %>d left</span>
+                                        <span class="text-[7px] font-black uppercase text-slate-400 mt-0.5"><%= rawDays %>d left</span>
                                     <% } %>
                                     <% if (unread > 0) { %>
-                                        <span class="absolute -top-1 -right-1 w-4 h-4 bg-rose-500 text-white rounded-full flex items-center justify-center text-[8px] animate-pulse"><%= unread %></span>
+                                        <span class="absolute -top-1 -right-1 w-3.5 h-3.5 bg-rose-500 text-white rounded-full flex items-center justify-center text-[7px] animate-pulse"><%= unread %></span>
                                     <% } %>
                                 </a>
                                 <% } else { %>
-                                <div class="relative flex-[0.3] flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-800 text-slate-400 rounded-xl py-1 opacity-50 cursor-not-allowed">
-                                    <i class="fa-solid fa-comments text-lg"></i>
-                                    <span class="text-[8px] font-black uppercase text-slate-400 mt-1">Expired</span>
+                                <div class="relative flex-[0.3] flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-900/60 text-slate-400 rounded-lg py-1 opacity-50 cursor-not-allowed">
+                                    <i class="fa-solid fa-comments text-base"></i>
+                                    <span class="text-[7px] font-black uppercase text-slate-450 mt-0.5">Expired</span>
                                 </div>
                                 <% } %>
                                 
                                 <% if ("Pending".equals(statusText)) { %>
-                                    <a href="reschedule_appointment.jsp?id=<%= app.getAppointmentId() %>" class="flex-1 text-center bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-indigo-600 hover:text-white text-[11px] font-black py-2.5 rounded-xl transition-all flex items-center justify-center">Reschedule</a>
-                                    <button type="button" onclick="openCancelAppModal('<%= app.getAppointmentId() %>')" class="flex-1 bg-slate-50 dark:bg-slate-800 text-red-500 hover:bg-red-500 hover:text-white text-[11px] font-black py-2.5 rounded-xl transition-all">Cancel</button>
+                                    <a href="reschedule_appointment.jsp?id=<%= app.getAppointmentId() %>" class="flex-1 text-center bg-slate-50 dark:bg-slate-900/60 text-slate-700 dark:text-slate-300 hover:bg-indigo-600 hover:text-white text-[10px] font-black py-2 rounded-lg transition-all flex items-center justify-center uppercase tracking-wider">Reschedule</a>
+                                    <button type="button" onclick="openCancelAppModal('<%= app.getAppointmentId() %>')" class="flex-1 bg-slate-50 dark:bg-slate-900/60 text-red-500 hover:bg-red-500 hover:text-white text-[10px] font-black py-2 rounded-lg transition-all uppercase tracking-wider">Cancel</button>
                                 <% } else { %>
-                                    <button disabled class="flex-1 bg-slate-50 dark:bg-slate-800/40 text-slate-400 dark:text-slate-600 text-[11px] font-black py-2.5 rounded-xl cursor-not-allowed">Locked - <%= statusText %></button>
+                                    <button disabled class="flex-1 bg-slate-50 dark:bg-slate-900/30 text-slate-400 dark:text-slate-600 text-[10px] font-black py-2 rounded-lg cursor-not-allowed uppercase tracking-wider">Locked</button>
                                 <% } %>
                             </div>
                         </div>
                     <% } if (!hasApp) { %>
-                        <div class="col-span-full bg-white dark:bg-slate-800/40 border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-3xl p-10 text-center">
-                            <div class="w-16 h-16 bg-slate-50 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <i class="fa-regular fa-calendar text-slate-400 text-2xl"></i>
+                        <div class="col-span-full bg-white dark:bg-slate-800/40 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-2xl p-6 text-center">
+                            <div class="w-12 h-12 bg-slate-50 dark:bg-slate-900 rounded-full flex items-center justify-center mx-auto mb-3">
+                                <i class="fa-regular fa-calendar text-slate-400 text-lg"></i>
                             </div>
-                            <p class="text-slate-500 dark:text-slate-400 font-bold">No active appointments found.</p>
-                            <a href="book_appointment.jsp" class="text-indigo-600 dark:text-indigo-400 text-sm font-bold mt-2 inline-block hover:underline">Book your first service &rarr;</a>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 font-bold">No active appointments found.</p>
+                            <a href="book_appointment.jsp" class="text-indigo-600 dark:text-indigo-400 text-[11px] font-black mt-1 inline-block hover:underline">Book your first service &rarr;</a>
                         </div>
                     <% } %>
                 </div>
@@ -235,23 +236,23 @@
 
             <!-- SERVICE HISTORY SECTION -->
             <section class="card overflow-hidden">
-                <div class="px-6 py-5 border-b border-slate-100 dark:border-slate-700/50 flex justify-between items-center">
-                    <h2 class="text-lg font-black text-slate-800 dark:text-white flex items-center gap-2">
+                <div class="px-4 py-3.5 border-b border-slate-100 dark:border-slate-800/80 flex justify-between items-center">
+                    <h2 class="text-sm font-black text-slate-800 dark:text-white flex items-center gap-2">
                         <i class="fa-solid fa-clipboard-list text-indigo-600"></i> Service History
                     </h2>
-                    <span class="text-[10px] font-black uppercase tracking-widest text-slate-400 bg-slate-100 dark:bg-slate-800 px-3 py-1.5 rounded-lg">Recent Service Logs</span>
+                    <span class="text-[8px] font-black uppercase tracking-widest text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded-md">Recent Logs</span>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="min-w-full">
                         <thead>
                             <tr class="bg-slate-50 dark:bg-slate-800/50">
-                                <th class="px-6 py-4 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">Date</th>
-                                <th class="px-6 py-4 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">Vehicle</th>
-                                <th class="px-6 py-4 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">Service Type</th>
-                                <th class="px-6 py-4 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Review</th>
+                                <th class="px-4 py-3 text-left text-[9px] font-black text-slate-400 uppercase tracking-widest">Date</th>
+                                <th class="px-4 py-3 text-left text-[9px] font-black text-slate-400 uppercase tracking-widest">Vehicle</th>
+                                <th class="px-4 py-3 text-left text-[9px] font-black text-slate-400 uppercase tracking-widest">Service Type</th>
+                                <th class="px-4 py-3 text-left text-[9px] font-black text-slate-400 uppercase tracking-widest text-right">Review</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-slate-100 dark:divide-slate-700/50">
+                        <tbody class="divide-y divide-slate-100 dark:divide-slate-800/50">
                             <% Node current = list.head;
                                boolean hasHistory = false;
                                while (current != null) {
@@ -269,28 +270,28 @@
                             %>
                             <tr class="group hover:bg-indigo-50/50 dark:hover:bg-indigo-900/10 cursor-pointer transition-all"
                                 onclick="openHistoryModal('<%= current.data.getDate() %>','<%= current.data.getLicensePlate() %>','<%= current.data.getServiceType() %>','<%= current.data.getPartsUsed() %>','<%= String.format("%,.2f", current.data.getCost()) %>',<%= hasFb %>,<%= rating %>,'<%= reply %>','<%= hasFb?matchedFb.getFeedbackId():"" %>','<%= hasFb?matchedFb.getMessage().replace("'","\\'"):"" %>')">
-                                <td class="px-6 py-5 text-sm font-bold text-slate-700 dark:text-slate-300"><%= current.data.getDate() %></td>
-                                <td class="px-6 py-5">
-                                    <span class="plate-tag text-[11px] font-black bg-white dark:bg-slate-900 border-2 border-slate-900 dark:border-slate-100 text-slate-900 dark:text-white"><%= current.data.getLicensePlate() %></span>
+                                <td class="px-4 py-3 text-xs font-bold text-slate-700 dark:text-slate-300"><%= current.data.getDate() %></td>
+                                <td class="px-4 py-3">
+                                    <span class="plate-tag text-[9px] font-black bg-white dark:bg-slate-900 border border-slate-900 dark:border-slate-100 text-slate-900 dark:text-white px-2 py-0.5 rounded"><%= current.data.getLicensePlate() %></span>
                                 </td>
-                                <td class="px-6 py-5">
+                                <td class="px-4 py-3">
                                     <div class="flex flex-col">
-                                        <span class="text-sm font-bold text-slate-800 dark:text-white"><%= current.data.getServiceType() %></span>
-                                        <span class="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5"><%= current.data.getPartsUsed() != null ? current.data.getPartsUsed() : "Full Inspection" %></span>
+                                        <span class="text-xs font-black text-slate-850 dark:text-white leading-tight"><%= current.data.getServiceType() %></span>
+                                        <span class="text-[9px] text-slate-400 dark:text-slate-500 mt-0.5 leading-none"><%= current.data.getPartsUsed() != null ? current.data.getPartsUsed() : "Full Inspection" %></span>
                                     </div>
                                 </td>
-                                <td class="px-6 py-5 text-right">
+                                <td class="px-4 py-3 text-right">
                                     <% if(hasFb) { %>
-                                        <div class="flex justify-end text-yellow-500 text-xs gap-0.5">
+                                        <div class="flex justify-end text-yellow-500 text-[10px] gap-0.5">
                                             <% for(int s=1;s<=5;s++) { %><i class="<%= (s<=rating)?"fa-solid":"fa-regular" %> fa-star"></i><% } %>
                                         </div>
                                     <% } else { %>
-                                        <span class="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/40 px-2 py-1 rounded-lg">Rate Service</span>
+                                        <span class="text-[8px] font-black text-indigo-650 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/40 px-2 py-0.5 rounded uppercase tracking-wider">Rate</span>
                                     <% } %>
                                 </td>
                             </tr>
                             <% } current = current.next; } if (!hasHistory) { %>
-                            <tr><td colspan="4" class="px-6 py-12 text-center text-slate-400 italic font-medium">Your service journey starts here. No logs yet.</td></tr>
+                            <tr><td colspan="4" class="px-4 py-8 text-center text-slate-400 italic text-xs font-medium">Your service journey starts here. No logs yet.</td></tr>
                             <% } %>
                         </tbody>
                     </table>
