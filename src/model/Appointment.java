@@ -8,6 +8,7 @@ public class Appointment {
     private String preferredTime;
     private String issueDescription;
     private String status; // "Pending", "Confirmed", "Completed"
+    private String completedDate;
 
     public Appointment() {}
 
@@ -20,6 +21,7 @@ public class Appointment {
         this.preferredTime = preferredTime;
         this.issueDescription = issueDescription;
         this.status = "Pending";
+        this.completedDate = "none";
     }
 
     // Getters and Setters
@@ -30,5 +32,9 @@ public class Appointment {
     public String getPreferredTime() { return preferredTime; }
     public String getIssueDescription() { return issueDescription; }
     public String getStatus() { return status; }
+    public String getCompletedDate() { return completedDate; }
     public void setStatus(String status) { this.status = status; }
+    public void setCompletedDate(String completedDate) { this.completedDate = completedDate; }
+    public void setPreferredDate(String preferredDate) { this.preferredDate = preferredDate; }
+    public void setPreferredTime(String preferredTime) { this.preferredTime = preferredTime; }
 }

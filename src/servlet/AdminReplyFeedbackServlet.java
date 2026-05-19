@@ -29,6 +29,6 @@ public class AdminReplyFeedbackServlet extends HttpServlet {
             manager.updateReply(feedbackId, replyMessage.trim());
         }
 
-        response.sendRedirect("admin_feedback.jsp?success=true");
+        response.sendRedirect("reviews.jsp?success=replied");
     }
 }

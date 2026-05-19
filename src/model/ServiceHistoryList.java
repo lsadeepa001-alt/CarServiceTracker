@@ -1,58 +1,61 @@
 package model;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import java.io.*;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ServiceHistoryList {
     public Node head;
-    private final String filePath = "services.json";
+    private final String filePath = Main.getFilePath("services.txt");
 
     public ServiceHistoryList() {
         this.head = null;
     }
 
-    // --- MAGIC POWER 1: SAVE TO FILE ---
+    // --- SAVE TO FILE ---
+    // Format: date|serviceType|cost|licensePlate|partsUsed
     public void saveToFile() {
-        Gson gson = new Gson();
-        try (FileWriter writer = new FileWriter(filePath)) {
-            List<ServiceRecord> list = new ArrayList<>();
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
             Node current = head;
             while (current != null) {
-                list.add(current.data);
+                String parts = (current.data.getPartsUsed() != null) ? current.data.getPartsUsed().replace("|", " ").replace("\r","").replace("\n","__NL__") : "None";
+                writer.write(current.data.getDate() + "|" + current.data.getServiceType() + "|" +
+                             current.data.getCost() + "|" + current.data.getLicensePlate() + "|" + parts);
+                writer.newLine();
                 current = current.next;
             }
-            gson.toJson(list, writer);
+            writer.flush();
         } catch (IOException e) {
-            System.out.println("Could not save to the Magic Memory Box!");
+            System.err.println("Could not save to services.txt: " + e.getMessage());
         }
     }
 
-    // --- MAGIC POWER 2: LOAD FROM FILE ---
+    // --- LOAD FROM FILE ---
     public void loadFromFile() {
         File file = new File(filePath);
         if (!file.exists()) return;
 
-        Gson gson = new Gson();
-        try (FileReader reader = new FileReader(filePath)) {
-            Type listType = new TypeToken<ArrayList<ServiceRecord>>(){}.getType();
-            ArrayList<ServiceRecord> savedData = gson.fromJson(reader, listType);
-
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
             this.head = null;
-            if (savedData != null) {
-                for (ServiceRecord record : savedData) {
-                    this.addRecord(record);
+            while ((line = reader.readLine()) != null) {
+                String[] p = line.split("\\|");
+                if (p.length >= 4) {
+                    try {
+                        double cost = Double.parseDouble(p[2]);
+                        String partsUsed = (p.length >= 5) ? p[4].replace("__NL__", "\n") : "No physical parts recorded.";
+                        ServiceRecord record = new ServiceRecord(p[0], p[1], cost, p[3], partsUsed);
+                        this.addRecord(record);
+                    } catch (NumberFormatException e) {
+                        System.out.println("Skipping invalid service line: " + line);
+                    }
                 }
             }
         } catch (IOException e) {
-            System.out.println("Could not read from the Magic Memory Box!");
+            System.err.println("Could not read from services.txt: " + e.getMessage());
         }
     }
 
-    // --- ACTION 1: ADD RECORD (Create) ---
     public void addRecord(ServiceRecord newRecord) {
         Node newCar = new Node(newRecord);
         if (this.head == null) {
@@ -66,51 +69,54 @@ public class ServiceHistoryList {
         }
     }
 
-    // --- ACTION 2: DISPLAY ALL (Read) ---
     public void displayAll() {
         if (this.head == null) {
-            System.out.println("The train is empty! No service history.");
+            System.out.println("The history is empty!");
             return;
         }
-        Node currentCar = this.head;
-        while (currentCar != null) {
-            System.out.println(currentCar.data.toString());
-            currentCar = currentCar.next;
+        Node current = this.head;
+        while (current != null) {
+            System.out.println(current.data.toString());
+            current = current.next;
         }
     }
 
-    // --- ACTION 3: UPDATE RECORD (Update) ---
-    // --- ACTION 3: UPDATE RECORD (Upgraded to use License Plate!) ---
     public void updateRecord(String oldDate, String oldType, String targetPlate, String newDate, String newType, double newCost) {
         Node current = this.head;
         while (current != null) {
-            // We now check the Date, the Type, AND the License Plate to find the exact car!
-            boolean dateMatches = current.data.getDate().equals(oldDate);
-            boolean typeMatches = current.data.getServiceType().equals(oldType);
-            boolean plateMatches = current.data.getLicensePlate() != null && current.data.getLicensePlate().equals(targetPlate);
+            boolean dateMatches = current.data.getDate().trim().equals(oldDate.trim());
+            boolean typeMatches = current.data.getServiceType().trim().equalsIgnoreCase(oldType.trim());
+            boolean plateMatches = current.data.getLicensePlate() != null && current.data.getLicensePlate().trim().equalsIgnoreCase(targetPlate.trim());
 
             if (dateMatches && typeMatches && plateMatches) {
                 current.data.setDate(newDate);
                 current.data.setServiceType(newType);
                 current.data.setCost(newCost);
-                // We DON'T change the license plate, because the service is permanently tied to that car!
                 return;
             }
             current = current.next;
         }
     }
 
-    // --- ACTION 4: DELETE RECORD (Delete) ---
-    public void deleteRecord(String date, String serviceType) {
+    public void deleteRecord(String date, String serviceType, String plate) {
         if (this.head == null) return;
-        if (this.head.data.getDate().equals(date) && this.head.data.getServiceType().equals(serviceType)) {
+        
+        // Check head node
+        if (this.head.data.getDate().trim().equals(date.trim()) && 
+            this.head.data.getServiceType().trim().equalsIgnoreCase(serviceType.trim()) &&
+            (plate == null || (this.head.data.getLicensePlate() != null && this.head.data.getLicensePlate().trim().equalsIgnoreCase(plate.trim())))) {
             this.head = this.head.next;
             return;
         }
+
         Node current = this.head;
         Node previous = null;
         while (current != null) {
-            if (current.data.getDate().equals(date) && current.data.getServiceType().equals(serviceType)) {
+            boolean dateMatches = current.data.getDate().trim().equals(date.trim());
+            boolean typeMatches = current.data.getServiceType().trim().equalsIgnoreCase(serviceType.trim());
+            boolean plateMatches = (plate == null) || (current.data.getLicensePlate() != null && current.data.getLicensePlate().trim().equalsIgnoreCase(plate.trim()));
+
+            if (dateMatches && typeMatches && plateMatches) {
                 previous.next = current.next;
                 return;
             }
@@ -119,7 +125,6 @@ public class ServiceHistoryList {
         }
     }
 
-    // --- ACTION 5: SORT BY DATE ---
     public void sortHistoryByDate() {
         if (this.head == null || this.head.next == null) return;
         Node current = this.head;

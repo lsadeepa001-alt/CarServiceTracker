@@ -19,34 +19,38 @@ public class AddVehicleServlet extends HttpServlet {
         String plate = request.getParameter("licensePlate");
         String make = request.getParameter("make");
         String model = request.getParameter("model");
-
         int year = Integer.parseInt(request.getParameter("year"));
         int mileage = Integer.parseInt(request.getParameter("mileage"));
-
         String owner = request.getParameter("ownerUsername");
 
-        // 2. BOX IT UP!
-        Vehicle newCar = new Vehicle(plate, make, model, year, mileage, owner);
+        // 2. Check if this is an EDIT or a NEW registration
+        String editMode = request.getParameter("editMode");
 
-        // 3. WAKE UP THE MEMORY BOX!
         HttpSession session = request.getSession();
         VehicleManager vManager = (VehicleManager) session.getAttribute("vehicleManager");
-
         if (vManager == null) {
             vManager = new VehicleManager();
         }
 
-        // 4. SAVE IT!
-        vManager.addVehicle(newCar);
+        if ("true".equals(editMode)) {
+            // EDIT MODE: Update existing vehicle via its original plate
+            String originalPlate = request.getParameter("originalPlate");
+            if (originalPlate != null) {
+                vManager.updateVehicle(originalPlate, make, model, year, mileage);
+            }
+            session.setAttribute("vehicleManager", vManager);
+            response.sendRedirect("manage_vehicles.jsp?success=added");
+        } else {
+            // ADD MODE: Create and save a new vehicle
+            Vehicle newCar = new Vehicle(plate, make, model, year, mileage, owner);
+            vManager.addVehicle(newCar);
+            session.setAttribute("vehicleManager", vManager);
 
-        // Save the manager back into the server memory
-        session.setAttribute("vehicleManager", vManager);
-
-        // 5. SEND THEM BACK!
-        String target = request.getParameter("redirect");
-        if (target == null || target.trim().isEmpty()) {
-            target = "customer_vehicles.jsp?success=added"; // Default
+            String target = request.getParameter("redirect");
+            if (target == null || target.trim().isEmpty()) {
+                target = "manage_vehicles.jsp?success=added";
+            }
+            response.sendRedirect(target);
         }
-        response.sendRedirect(target);
     }
 }

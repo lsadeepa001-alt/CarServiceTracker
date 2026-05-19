@@ -1,6 +1,5 @@
 package model;
 
-import com.google.gson.Gson;
 import java.io.*;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -14,14 +13,7 @@ public class BookingManager {
     private Queue<Appointment> inGarageQueue;    // Under Maintenance
     private Queue<Appointment> completedQueue;   // Completed Jobs waiting for payment
 
-    private final String FILE_PATH = "appointments.json";
-
-    // Helper wrapper for Gson to serialize all three lists neatly
-    private class DataWrapper {
-        Queue<Appointment> pending;
-        Queue<Appointment> garage;
-        Queue<Appointment> completed;
-    }
+    private final String FILE_PATH = Main.getFilePath("appointments.txt");
 
     public BookingManager() {
         this.appointmentQueue = new LinkedList<>();
@@ -37,6 +29,34 @@ public class BookingManager {
         saveToFile();
     }
 
+    public boolean removeAppointment(String targetAppointmentId) {
+        Appointment found = null;
+        for (Appointment app : appointmentQueue) {
+            if (app.getAppointmentId().equals(targetAppointmentId)) {
+                found = app;
+                break;
+            }
+        }
+        if (found != null) {
+            appointmentQueue.remove(found);
+            saveToFile();
+            return true;
+        }
+        return false;
+    }
+
+    public boolean updateAppointment(String targetAppointmentId, String newDate, String newTime) {
+        for (Appointment app : appointmentQueue) {
+            if (app.getAppointmentId().equals(targetAppointmentId)) {
+                app.setPreferredDate(newDate);
+                app.setPreferredTime(newTime);
+                saveToFile();
+                return true;
+            }
+        }
+        return false;
+    }
+
     // --- DEQUEUE + TRANSFER: Move to Garage (Mechanic claims it) ---
     public void moveToGarage() {
         if (!appointmentQueue.isEmpty()) {
@@ -45,6 +65,31 @@ public class BookingManager {
             inGarageQueue.add(next);
             saveToFile();
         }
+    }
+
+    public boolean moveToGarage(String targetId) {
+        Appointment found = null;
+        for (Appointment app : appointmentQueue) {
+            if (app.getAppointmentId().equals(targetId)) {
+                found = app;
+                break;
+            }
+        }
+        if (found != null) {
+            appointmentQueue.remove(found);
+            found.setStatus("Under Maintenance");
+            inGarageQueue.add(found);
+            saveToFile();
+            return true;
+        }
+        return false;
+    }
+
+    // --- DIRECT COMPLETED: Add directly to completed queue ---
+    public void addCompletedAppointment(Appointment app) {
+        app.setStatus("Completed");
+        completedQueue.add(app);
+        saveToFile();
     }
 
     // --- DEQUEUE + TRANSFER: Finish repair (Mechanic completes it) ---
@@ -60,6 +105,8 @@ public class BookingManager {
         if (found != null) {
             inGarageQueue.remove(found);
             found.setStatus("Completed");
+            String today = new java.text.SimpleDateFormat("yyyy-MM-dd").format(new java.util.Date());
+            found.setCompletedDate(today);
             completedQueue.add(found);
             saveToFile();
         }
@@ -96,55 +143,77 @@ public class BookingManager {
         return null;
     }
 
-    // --- JSON Logic ---
+    // --- TXT File Save ---
+    // Format: appointmentId|customerUsername|licensePlate|preferredDate|preferredTime|issueDescription|status
     private void saveToFile() {
-        try (Writer writer = new FileWriter(FILE_PATH)) {
-            DataWrapper wrap = new DataWrapper();
-            wrap.pending = this.appointmentQueue;
-            wrap.garage = this.inGarageQueue;
-            wrap.completed = this.completedQueue;
-            new Gson().toJson(wrap, writer);
-        } catch (IOException e) { e.printStackTrace(); }
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH));
+            // Save all appointments from all three queues
+            for (Appointment app : appointmentQueue) {
+                writer.write(formatAppointment(app));
+                writer.newLine();
+            }
+            for (Appointment app : inGarageQueue) {
+                writer.write(formatAppointment(app));
+                writer.newLine();
+            }
+            for (Appointment app : completedQueue) {
+                writer.write(formatAppointment(app));
+                writer.newLine();
+            }
+            writer.flush();
+            writer.close();
+        } catch (IOException e) {
+            System.out.println("Error saving appointments: " + e.getMessage());
+        }
     }
 
-    private void loadFromFile() {
-        try (Reader reader = new FileReader(FILE_PATH)) {
-            Gson gson = new Gson();
-            try {
-                DataWrapper wrap = gson.fromJson(reader, DataWrapper.class);
-                if (wrap != null) {
-                    if (wrap.pending != null) this.appointmentQueue.addAll(wrap.pending);
-                    if (wrap.garage != null) this.inGarageQueue.addAll(wrap.garage);
-                    if (wrap.completed != null) this.completedQueue.addAll(wrap.completed);
-                }
-            } catch (com.google.gson.JsonSyntaxException e) {
-                // LEGACY MIGRATION: The file contains the old raw Array format instead of DataWrapper.
-                // Re-open list and fetch inherently.
-            }
-        } catch (FileNotFoundException e) {
-            System.out.println("No booking file found.");
-        } catch (IOException e) { e.printStackTrace(); }
+    private String formatAppointment(Appointment app) {
+        String desc = (app.getIssueDescription() != null) ? app.getIssueDescription().replace("|", " ").replace("\r", "").replace("\n", "__NL__") : "None";
+        String compDate = (app.getCompletedDate() != null) ? app.getCompletedDate() : "none";
+        return app.getAppointmentId() + "|" + app.getCustomerUsername() + "|" + app.getLicensePlate() + "|" +
+               app.getPreferredDate() + "|" + app.getPreferredTime() + "|" + desc + "|" + app.getStatus() + "|" + compDate;
+    }
 
-        // MIGRATION BACKFALL
-        if (this.appointmentQueue.isEmpty() && this.inGarageQueue.isEmpty() && this.completedQueue.isEmpty()) {
+    // --- TXT File Load ---
+    private void loadFromFile() {
+        try {
             File f = new File(FILE_PATH);
-            if (f.exists()) {
-                try (Reader reader = new FileReader(FILE_PATH)) {
-                    java.lang.reflect.Type listType = new com.google.gson.reflect.TypeToken<ArrayList<Appointment>>(){}.getType();
-                    List<Appointment> legacyList = new Gson().fromJson(reader, listType);
-                    if (legacyList != null) {
-                        for (Appointment legacy : legacyList) {
-                            if (legacy.getStatus() == null || legacy.getStatus().isEmpty()) {
-                                legacy.setStatus("Pending");
-                            }
-                            this.appointmentQueue.add(legacy);
-                        }
-                        saveToFile(); // Instantly convert physical file properties to new schema
+            if (!f.exists()) {
+                System.out.println("No booking file found. Starting fresh!");
+                return;
+            }
+
+            BufferedReader reader = new BufferedReader(new FileReader(f));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split("\\|");
+                if (parts.length >= 7) {
+                    String desc = parts[5].replace("__NL__", "\n");
+                    Appointment app = new Appointment(parts[0], parts[1], parts[2], parts[3], parts[4], desc);
+                    app.setStatus(parts[6]);
+                    
+                    if (parts.length >= 8) {
+                        app.setCompletedDate(parts[7]);
+                    } else {
+                        app.setCompletedDate("none");
                     }
-                } catch (Exception ex) {
-                    System.out.println("Could not migrate legacy Booking data: " + ex.getMessage());
+
+                    // Route to the correct queue based on status
+                    if ("Pending".equals(parts[6])) {
+                        appointmentQueue.add(app);
+                    } else if ("Under Maintenance".equals(parts[6])) {
+                        inGarageQueue.add(app);
+                    } else if ("Completed".equals(parts[6])) {
+                        completedQueue.add(app);
+                    } else {
+                        appointmentQueue.add(app); // Default fallback
+                    }
                 }
             }
+            reader.close();
+        } catch (IOException e) {
+            System.out.println("Error loading appointments: " + e.getMessage());
         }
     }
 }

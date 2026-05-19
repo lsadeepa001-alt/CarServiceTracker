@@ -1,15 +1,12 @@
 package model;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import java.io.*;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ServiceTypeManager {
     private List<ServiceType> serviceTypes;
-    private final String FILE_PATH = "service_types.json";
+    private final String FILE_PATH = Main.getFilePath("service_types.txt");
 
     public ServiceTypeManager() {
         this.serviceTypes = new ArrayList<>();
@@ -27,12 +24,12 @@ public class ServiceTypeManager {
         // Auto-bootstrap default physical service nodes if database misses initialization or holds old data!
         if (serviceTypes.isEmpty() || hasLegacy) {
             this.serviceTypes.clear();
-            this.serviceTypes.add(new ServiceType("Standard Sedan Service", 8500.00));
-            this.serviceTypes.add(new ServiceType("SUV Heavy Duty Maintenance", 18000.00));
-            this.serviceTypes.add(new ServiceType("Hybrid System Check & Maintenance", 12500.00));
-            this.serviceTypes.add(new ServiceType("Sports Car Performance Tuning", 35000.00));
-            this.serviceTypes.add(new ServiceType("EV Powertrain Diagnostics", 22000.00));
-            this.serviceTypes.add(new ServiceType("Crossover Suspension Overhaul", 16000.00));
+            this.serviceTypes.add(new ServiceType("Standard Sedan Service", "Maintenance", 8500.00));
+            this.serviceTypes.add(new ServiceType("SUV Heavy Duty Maintenance", "Maintenance", 18000.00));
+            this.serviceTypes.add(new ServiceType("Hybrid System Check & Maintenance", "Diagnostic", 12500.00));
+            this.serviceTypes.add(new ServiceType("Sports Car Performance Tuning", "Repair", 35000.00));
+            this.serviceTypes.add(new ServiceType("EV Powertrain Diagnostics", "Diagnostic", 22000.00));
+            this.serviceTypes.add(new ServiceType("Crossover Suspension Overhaul", "Repair", 16000.00));
             saveToFile();
         }
     }
@@ -47,25 +44,60 @@ public class ServiceTypeManager {
     }
     
     public void deleteServiceType(String serviceName) {
-        serviceTypes.removeIf(st -> st.getServiceName().equals(serviceName));
+        serviceTypes.removeIf(st -> st.getServiceName().trim().equalsIgnoreCase(serviceName.trim()));
         saveToFile();
     }
 
+    public void updateServiceType(String targetName, String newName, String newCategory, double newPrice) {
+        for (ServiceType st : serviceTypes) {
+            if (st.getServiceName().trim().equalsIgnoreCase(targetName.trim())) {
+                st.setServiceName(newName);
+                st.setCategory(newCategory);
+                st.setDefaultBasePrice(newPrice);
+                break;
+            }
+        }
+        saveToFile();
+    }
+
+    // Format: serviceName|defaultBasePrice
     private void saveToFile() {
-        try (Writer writer = new FileWriter(FILE_PATH)) {
-            new Gson().toJson(serviceTypes, writer);
-        } catch (IOException e) { e.printStackTrace(); }
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH));
+            for (ServiceType st : serviceTypes) {
+                writer.write(st.getServiceName() + "|" + st.getCategory() + "|" + st.getDefaultBasePrice());
+                writer.newLine();
+            }
+            writer.flush();
+            writer.close();
+        } catch (IOException e) {
+            System.out.println("Error saving service types: " + e.getMessage());
+        }
     }
 
     private void loadFromFile() {
-        try (Reader reader = new FileReader(FILE_PATH)) {
-            Type listType = new TypeToken<ArrayList<ServiceType>>(){}.getType();
-            List<ServiceType> loaded = new Gson().fromJson(reader, listType);
-            if (loaded != null) {
-                this.serviceTypes = loaded;
+        File file = new File(FILE_PATH);
+        if (!file.exists()) return;
+
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split("\\|");
+                if (parts.length >= 2) {
+                    try {
+                        String name = parts[0];
+                        String category = (parts.length >= 3) ? parts[1] : "General";
+                        double price = Double.parseDouble((parts.length >= 3) ? parts[2] : parts[1]);
+                        serviceTypes.add(new ServiceType(name, category, price));
+                    } catch (NumberFormatException e) {
+                        System.out.println("Skipping invalid service type line: " + line);
+                    }
+                }
             }
-        } catch (FileNotFoundException e) {
-            // Wait for bootstrap insertion
-        } catch (IOException e) { e.printStackTrace(); }
+            reader.close();
+        } catch (IOException e) {
+            System.out.println("Error loading service types: " + e.getMessage());
+        }
     }
 }

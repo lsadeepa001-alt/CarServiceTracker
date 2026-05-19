@@ -1,131 +1,214 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
     String role = (String) session.getAttribute("userRole");
-    if (!"admin".equals(role)) {
-        response.sendRedirect("login.jsp");
-        return;
-    }
+    boolean isAdmin = "admin".equals(role);
+    if (!isAdmin) { response.sendRedirect("login.jsp"); return; }
 %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register - SwiftDrive Services</title>
+    <title>Create User Account - SwiftDrive</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            background-image: url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?q=80&w=1983&auto=format&fit=crop');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
+        * { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .brand-panel { background: #020617; position: relative; overflow: hidden; }
+        .brand-panel::before {
+            content: ''; position: absolute; inset: 0;
+            background: radial-gradient(circle at 20% 30%, rgba(99, 102, 241, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 70%, rgba(79, 70, 229, 0.08) 0%, transparent 50%);
+            pointer-events: none;
         }
-        .overlay {
-            background: linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.5) 100%);
-            backdrop-filter: blur(3px);
-        }
+        .strength-bar { height: 8px; border-radius: 100px; background: rgba(0,0,0,0.05); overflow: hidden; }
+        .dark .strength-bar { background: rgba(255,255,255,0.05); }
+        .strength-fill { height: 100%; border-radius: 100px; transition: width 0.4s, background 0.4s; }
+        @keyframes slideUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+        .animate-slide-up { animation: slideUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
     </style>
 </head>
-<body class="relative">
-    <div class="overlay fixed inset-0"></div>
+<body class="h-screen overflow-hidden text-slate-900 dark:text-slate-100 bg-slate-50 dark:bg-slate-950 transition-colors duration-300">
+<%@ include file="theme_script.jsp" %>
 
-    <div class="relative min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-        <div class="max-w-md w-full space-y-8 bg-white/95 backdrop-blur-sm p-10 rounded-2xl shadow-2xl border border-white/20 transform transition-all duration-300 hover:shadow-3xl">
-            <div class="text-center">
-                <h2 class="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Create Account</h2>
-                <p class="mt-3 text-sm text-gray-600 flex items-center justify-center gap-2">
-                    <svg class="h-4 w-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    Join SwiftDrive Services today
-                </p>
+<div class="flex h-screen">
+    <!-- LEFT: BRAND PANEL -->
+    <div class="brand-panel hidden lg:flex lg:w-1/2 flex-col justify-center items-center px-16 relative">
+        <div class="max-w-md relative z-10 text-center lg:text-left">
+            <div class="mb-16">
+                <div class="flex items-center justify-center lg:justify-start gap-4 mb-6">
+                    <div class="w-16 h-16 rounded-[1.5rem] bg-indigo-600 border border-indigo-500/20 flex items-center justify-center shadow-2xl">
+                        <i class="fa-solid fa-car-side text-white text-2xl"></i>
+                    </div>
+                    <h1 class="text-5xl font-black text-white tracking-tighter">SwiftDrive</h1>
+                </div>
+                <p class="text-indigo-300/40 text-[10px] font-black uppercase tracking-[0.4em] ml-2">User Registration System</p>
             </div>
 
-            <form action="RegisterServlet" method="POST" class="mt-8 space-y-6">
-                <div class="space-y-5">
+            <div class="space-y-8">
+                <div class="flex items-center gap-8 group">
+                    <div class="w-14 h-14 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform shadow-2xl">
+                        <i class="fa-solid fa-id-card text-indigo-400 text-xl"></i>
+                    </div>
                     <div>
-                        <label for="username" class="block text-sm font-semibold text-gray-700 mb-2">Username</label>
-                        <div class="relative">
-                            <input
-                                id="username"
-                                name="username"
-                                type="text"
-                                minlength="4"
-                                title="Username must be at least 4 characters"
-                                required
-                                class="appearance-none relative block w-full pl-2 py-3 border-2 border-gray-200 placeholder-gray-400 text-gray-900 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 sm:text-sm"
-                                placeholder="Choose a username"
-                            >
-                        </div>
+                        <p class="text-white font-black text-lg tracking-tight">User Account</p>
+                        <p class="text-slate-500 text-xs mt-1 font-medium leading-relaxed">Manage user access and credentials in one place.</p>
                     </div>
-
+                </div>
+                <div class="flex items-center gap-8 group">
+                    <div class="w-14 h-14 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform shadow-2xl">
+                        <i class="fa-solid fa-fingerprint text-emerald-400 text-xl"></i>
+                    </div>
                     <div>
-                        <label for="password" class="block text-sm font-semibold text-gray-700 mb-2">Password</label>
-                        <div class="relative">
-                            <input
-                                id="password"
-                                name="password"
-                                type="password"
-                                pattern="(?=.*\d)(?=.*[\W_]).{8,}"
-                                title="Must be at least 8 characters with 1 number and 1 special character"
-                                required
-                                class="appearance-none relative block w-full pl-2 py-3 border-2 border-gray-200 placeholder-gray-400 text-gray-900 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 sm:text-sm"
-                                placeholder="Create a strong password"
-                            >
-                        </div>
-                        <p class="mt-1 text-xs text-gray-500">Minimum 8 characters with 1 number & 1 special character</p>
+                        <p class="text-white font-black text-lg tracking-tight">User Permissions</p>
+                        <p class="text-slate-500 text-xs mt-1 font-medium leading-relaxed">Define what each user can see and do within the system.</p>
                     </div>
+                </div>
+            </div>
 
-                    <div>
-                        <label for="role" class="block text-sm font-bold text-gray-700 mb-2">Account Type</label>
-                        <div class="relative">
-                            <select
-                                id="role"
-                                name="role"
-                                required
-                                class="appearance-none relative block w-full pl-2 py-3 border-2 border-gray-200 text-gray-900 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 sm:text-sm bg-white"
-                            >
-                                <option value="customer">Customer</option>
-                                <option value="admin">Admin</option>
-                            </select>
-                        </div>
-                    </div>
-                    </div>
+            <div class="mt-24 border-t border-white/10 pt-8">
+                <p class="text-slate-600 text-[10px] font-black uppercase tracking-[0.3em]">&copy; 2026 SwiftDrive Systems Engineering</p>
+            </div>
+        </div>
+    </div>
 
-                <div class="flex flex-col space-y-3">
-                    <button 
-                        type="submit" 
-                        class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-semibold rounded-xl text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transform transition-all duration-200 hover:scale-[1.02] shadow-lg"
-                    >
-                        <span class="absolute left-0 inset-y-0 flex items-center pl-3">
-                            <svg class="h-5 w-5 text-blue-300 group-hover:text-blue-200 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
-                            </svg>
-                        </span>
-                        Create Account
-                    </button>
-                    
-                    <a 
-                        href="manage-users.jsp" 
-                        class="text-center text-sm text-gray-500 hover:text-red-600 hover:underline flex items-center justify-center gap-1 transition-colors duration-200"
-                    >
-                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                        Cancel & Return
-                    </a>
+    <!-- RIGHT: REGISTER FORM -->
+    <div class="w-full lg:w-1/2 bg-white dark:bg-slate-950 flex flex-col justify-center items-center px-8 relative overflow-y-auto no-scrollbar transition-colors duration-300">
+        <!-- Theme Toggle -->
+        <button onclick="toggleTheme()" class="absolute top-10 right-10 w-12 h-12 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 text-slate-400 dark:text-slate-600 hover:text-indigo-600 dark:hover:text-indigo-400 flex items-center justify-center transition-all shadow-sm active:scale-90 z-50">
+            <i class="fa-solid fa-moon show-light text-lg"></i>
+            <i class="fa-solid fa-sun show-dark text-lg"></i>
+        </button>
+
+        <div class="w-full max-w-md py-20 animate-slide-up">
+            <h2 class="text-5xl font-black text-slate-900 dark:text-white tracking-tighter mb-4">Register New User</h2>
+            <p class="text-slate-500 dark:text-slate-400 text-lg font-medium mb-12">Fill in the details below to create a new account.</p>
+
+            <% if ("exists".equals(request.getParameter("error"))) { %>
+            <div class="bg-rose-50 dark:bg-rose-950/30 border border-rose-100 dark:border-rose-900/30 text-rose-600 dark:text-rose-400 px-6 py-5 rounded-[2rem] mb-10 flex items-center gap-4 text-[10px] font-black uppercase tracking-widest shadow-inner">
+                <i class="fa-solid fa-circle-exclamation text-rose-500 text-lg"></i> Username already exists. Please choose another.
+            </div>
+            <% } %>
+
+            <form action="RegisterServlet" method="POST" id="regForm" class="space-y-8" onsubmit="return validateRegister()">
+                <div class="input-group">
+                    <label class="block text-[10px] font-black text-slate-400 dark:text-slate-600 uppercase tracking-[0.3em] mb-4">Full Name</label>
+                    <div class="flex items-center bg-slate-50 dark:bg-slate-900 border-2 border-transparent dark:border-slate-800 rounded-[2rem] focus-within:border-indigo-600 focus-within:ring-8 focus-within:ring-indigo-500/10 transition-all px-8">
+                        <i class="fa-regular fa-id-card text-slate-400 dark:text-slate-700"></i>
+                        <input name="fullName" type="text" required placeholder="John Doe" class="w-full py-5 px-4 bg-transparent outline-none font-black text-slate-900 dark:text-white">
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label class="block text-[10px] font-black text-slate-400 dark:text-slate-600 uppercase tracking-[0.3em] mb-4">Username</label>
+                    <div class="flex items-center bg-slate-50 dark:bg-slate-900 border-2 border-transparent dark:border-slate-800 rounded-[2rem] focus-within:border-indigo-600 focus-within:ring-8 focus-within:ring-indigo-500/10 transition-all px-8">
+                        <i class="fa-regular fa-user text-slate-400 dark:text-slate-700"></i>
+                        <input name="username" type="text" required minlength="4" placeholder="user_node" class="w-full py-5 px-4 bg-transparent outline-none font-black text-slate-900 dark:text-white">
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label class="block text-[10px] font-black text-slate-400 dark:text-slate-600 uppercase tracking-[0.3em] mb-4">Password</label>
+                    <div class="flex items-center bg-slate-50 dark:bg-slate-900 border-2 border-transparent dark:border-slate-800 rounded-[2rem] focus-within:border-indigo-600 focus-within:ring-8 focus-within:ring-indigo-500/10 transition-all px-8">
+                        <i class="fa-solid fa-lock text-slate-400 dark:text-slate-700"></i>
+                        <input id="regPwd" name="password" type="password" required minlength="8" placeholder="••••••••••••" class="w-full py-5 px-4 bg-transparent outline-none font-black text-slate-900 dark:text-white" oninput="checkStrength(this.value); checkMatch()">
+                        <button type="button" onclick="togglePwd('regPwd', this)" class="text-slate-400 hover:text-indigo-500 transition-colors"><i class="fa-regular fa-eye"></i></button>
+                    </div>
+                    <div class="mt-4">
+                        <div class="strength-bar"><div class="strength-fill" id="strengthFill" style="width:0%"></div></div>
+                        <p class="text-[9px] font-black mt-2 uppercase tracking-widest" id="strengthLabel"><span class="text-slate-400 dark:text-slate-700">Waiting for input...</span></p>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label class="block text-[10px] font-black text-slate-400 dark:text-slate-600 uppercase tracking-[0.3em] mb-4">Confirm Password</label>
+                    <div class="flex items-center bg-slate-50 dark:bg-slate-900 border-2 border-transparent dark:border-slate-800 rounded-[2rem] focus-within:border-indigo-600 focus-within:ring-8 focus-within:ring-indigo-500/10 transition-all px-8">
+                        <i class="fa-solid fa-check-double text-slate-400 dark:text-slate-700"></i>
+                        <input id="regPwdConfirm" type="password" required placeholder="••••••••••••" class="w-full py-5 px-4 bg-transparent outline-none font-black text-slate-900 dark:text-white" oninput="checkMatch()">
+                        <span id="matchIcon" class="hidden"></span>
+                    </div>
+                    <p class="text-[9px] font-black mt-2 uppercase tracking-widest" id="matchLabel"></p>
+                </div>
+
+                <div class="bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800 rounded-[2rem] p-6 group transition-all">
+                    <label class="flex items-center gap-4 cursor-pointer">
+                        <div class="relative flex items-center justify-center">
+                            <input type="checkbox" id="adminToggle" class="peer appearance-none w-7 h-7 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-xl checked:bg-indigo-600 checked:border-indigo-600 transition-all" onchange="updateRole()">
+                            <i class="fa-solid fa-check absolute text-white text-[10px] opacity-0 peer-checked:opacity-100 transition-opacity"></i>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <i class="fa-solid fa-user-shield text-slate-400 dark:text-slate-700 text-lg"></i>
+                            <span class="text-sm font-black text-slate-800 dark:text-white">Admin Access</span>
+                        </div>
+                    </label>
+                    <p class="text-[10px] font-medium text-slate-400 dark:text-slate-500 mt-2 ml-11">Grant full administrative access to all system features.</p>
+                </div>
+                <input type="hidden" name="role" id="roleInput" value="customer">
+
+                <button type="submit" class="w-full py-6 bg-slate-900 dark:bg-white text-white dark:text-slate-950 font-black text-[10px] uppercase tracking-[0.2em] rounded-[2.5rem] shadow-2xl transition-all active:scale-95 flex items-center justify-center gap-4">
+                    <i class="fa-solid fa-user-plus text-lg"></i> Register User
+                </button>
+
+                <div class="text-center pt-4">
+                    <a href="manage_users.jsp" class="text-[10px] font-black text-slate-400 dark:text-slate-600 hover:text-indigo-600 dark:hover:text-white uppercase tracking-widest flex items-center justify-center gap-3 transition-all"><i class="fa-solid fa-arrow-left"></i> Cancel</a>
                 </div>
             </form>
         </div>
     </div>
-<%@ include file="toast.jsp" %>
+</div>
+
 <script>
-    document.addEventListener("DOMContentLoaded", () => {
-        <% if ("exists".equals(request.getParameter("error"))) { %>
-            showToast("That username is already taken. Please choose another one.", "error");
-        <% } %>
-    });
+function togglePwd(id, btn) {
+    const input = document.getElementById(id);
+    const icon = btn.querySelector('i');
+    if (input.type === 'password') { input.type = 'text'; icon.className = 'fa-regular fa-eye-slash'; }
+    else { input.type = 'password'; icon.className = 'fa-regular fa-eye'; }
+}
+
+function checkStrength(pwd) {
+    const fill = document.getElementById('strengthFill');
+    const label = document.getElementById('strengthLabel');
+    let score = 0;
+    if (pwd.length >= 8) score++;
+    if (pwd.length >= 12) score++;
+    if (/[A-Z]/.test(pwd)) score++;
+    if (/[0-9]/.test(pwd)) score++;
+    if (/[\W_]/.test(pwd)) score++;
+
+    if (pwd.length === 0) { fill.style.width = '0%'; label.innerHTML = '<span class="text-slate-400 dark:text-slate-700">Waiting for input...</span>'; return; }
+    if (score <= 2) { fill.style.width = '33%'; fill.style.background = '#F43F5E'; label.innerHTML = '<span class="text-rose-500">Weak Password</span>'; }
+    else if (score <= 3) { fill.style.width = '66%'; fill.style.background = '#F59E0B'; label.innerHTML = '<span class="text-amber-500">Medium Strength</span>'; }
+    else { fill.style.width = '100%'; fill.style.background = '#10B981'; label.innerHTML = '<span class="text-emerald-500">Strong Password</span>'; }
+}
+
+function checkMatch() {
+    const pwd = document.getElementById('regPwd').value;
+    const confirm = document.getElementById('regPwdConfirm').value;
+    const icon = document.getElementById('matchIcon');
+    const label = document.getElementById('matchLabel');
+    if (confirm.length === 0) { icon.classList.add('hidden'); label.innerHTML = ''; return; }
+    icon.classList.remove('hidden');
+    if (pwd === confirm) {
+        icon.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-500 ml-2"></i>';
+        label.innerHTML = '<span class="text-emerald-500">Passwords match</span>';
+    } else {
+        icon.innerHTML = '<i class="fa-solid fa-circle-xmark text-rose-500 ml-2"></i>';
+        label.innerHTML = '<span class="text-rose-500">Passwords do not match</span>';
+    }
+}
+
+function updateRole() {
+    document.getElementById('roleInput').value = document.getElementById('adminToggle').checked ? 'admin' : 'customer';
+}
+
+function validateRegister() {
+    const pwd = document.getElementById('regPwd').value;
+    const confirm = document.getElementById('regPwdConfirm').value;
+    if (pwd !== confirm) return false;
+    return true;
+}
 </script>
 </body>
 </html>

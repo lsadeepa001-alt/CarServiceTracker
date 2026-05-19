@@ -1,6 +1,42 @@
 package model;
 
+import java.io.File;
+import java.net.URL;
+
 public class Main {
+
+    // --- Centralized Data File Path Resolver ---
+    private static String DATA_DIR = null;
+
+    public static synchronized String getFilePath(String fileName) {
+        if (DATA_DIR == null) {
+            try {
+                // Find where compiled classes live
+                URL classRoot = Main.class.getResource("/");
+                if (classRoot != null) {
+                    File dir = new File(classRoot.toURI());
+                    // Walk up the directory tree to find the project root
+                    // (the folder that contains both "src" and "webapp")
+                    for (int i = 0; i < 10 && dir != null; i++) {
+                        if (new File(dir, "src").exists() && new File(dir, "webapp").exists()) {
+                            DATA_DIR = dir.getAbsolutePath() + File.separator;
+                            break;
+                        }
+                        dir = dir.getParentFile();
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            // Fallback: use current working directory
+            if (DATA_DIR == null) {
+                DATA_DIR = System.getProperty("user.dir") + File.separator;
+            }
+            System.out.println("[Main] Data directory resolved to: " + DATA_DIR);
+        }
+        return DATA_DIR + fileName;
+    }
+
     public static void main(String[] args) {
 
         System.out.println("--- Starting the SwiftDrive Services ---");

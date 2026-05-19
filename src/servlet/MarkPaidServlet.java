@@ -15,14 +15,13 @@ public class MarkPaidServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        // Catch the secret ID we hid inside the button
         String targetInvoiceId = request.getParameter("invoiceId");
 
-        // Tell the manager to mark it as PAID
+        // Mark invoice as PAID and persist to file
         BillingManager bm = new BillingManager();
         bm.markAsPaid(targetInvoiceId);
-        
-        // 1. Fetch the exact invoice to extract data for History
+
+        // Also push a record into the service history linked list
         Invoice targeted = null;
         for (Invoice inv : bm.getAllInvoices()) {
             if (inv.getInvoiceId().equals(targetInvoiceId)) {
@@ -30,20 +29,24 @@ public class MarkPaidServlet extends HttpServlet {
                 break;
             }
         }
-        
+
         if (targeted != null) {
+            // Auto-create Payment Record
+            String paymentId = "PAY-" + (System.currentTimeMillis() % 100000);
+            Payment payment = new Payment(paymentId, targetInvoiceId, targeted.getTotalAmount(), "Cash", java.time.LocalDate.now().toString(), "Auto-generated on Mark Paid");
+            PaymentManager pm = new PaymentManager();
+            pm.addPayment(payment);
+
             String fullDescription = targeted.getServiceDescription();
             String abstractService = fullDescription;
             String partsUsedLog = "No parts consumed.";
-            
-            // Extract out the parts dynamically from how we formulated it in billing
+
             if (fullDescription.contains("(Parts: ")) {
                 int splitIndex = fullDescription.indexOf("(Parts: ");
                 abstractService = fullDescription.substring(0, splitIndex).trim();
                 partsUsedLog = fullDescription.substring(splitIndex + 8, fullDescription.length() - 1);
             }
-            
-            // 2. Build the Native History Object Node mapping the extracted strings
+
             ServiceRecord historicalRecord = new ServiceRecord(
                 targeted.getDateIssued(),
                 abstractService,
@@ -51,24 +54,21 @@ public class MarkPaidServlet extends HttpServlet {
                 targeted.getLicensePlate(),
                 partsUsedLog
             );
-            
-            // 3. Push it directly into the strict LinkedList implementation!
+
             HttpSession session = request.getSession();
             ServiceHistoryList historyEngine = (ServiceHistoryList) session.getAttribute("serviceList");
-            
+
             if (historyEngine == null) {
                 historyEngine = new ServiceHistoryList();
                 historyEngine.loadFromFile();
             }
-            
+
             historyEngine.addRecord(historicalRecord);
             historyEngine.saveToFile();
-            
-            // 4. Force Update into Session memory directly to prevent Admin refresh lag!
             session.setAttribute("serviceList", historyEngine);
         }
 
-        // Refresh the page to see it turn green!
+        // Always redirect back to dashboard with success toast
         response.sendRedirect("billing_dashboard.jsp?success=paid");
     }
 }

@@ -1,62 +1,64 @@
 package model;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import java.io.*;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
 public class VehicleManager {
-    // We use a standard ArrayList here instead of a Linked List
     private List<Vehicle> vehicleList;
-    private final String filePath = "vehicles.json"; // The Magic Memory Box for cars
+    private final String FILE_PATH = Main.getFilePath("vehicles.txt");
 
     public VehicleManager() {
         this.vehicleList = new ArrayList<>();
-        loadFromFile(); // Automatically load the cars when the manager is created!
+        loadFromFile();
     }
 
-    // --- MAGIC POWER 1: SAVE TO FILE ---
     private void saveToFile() {
-        Gson gson = new Gson();
-        try (FileWriter writer = new FileWriter(filePath)) {
-            gson.toJson(vehicleList, writer);
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH))) {
+            for (Vehicle v : vehicleList) {
+                writer.write(v.getLicensePlate() + "|" + v.getMake() + "|" + v.getModel() + "|" +
+                             v.getYear() + "|" + v.getMileage() + "|" + v.getOwnerUsername());
+                writer.newLine();
+            }
+            writer.flush();
         } catch (IOException e) {
-            System.out.println("Could not save to vehicles.json!");
+            System.err.println("Could not save to vehicles.txt: " + e.getMessage());
         }
     }
 
-    // --- MAGIC POWER 2: LOAD FROM FILE ---
     private void loadFromFile() {
-        File file = new File(filePath);
+        File file = new File(FILE_PATH);
         if (!file.exists()) return;
 
-        Gson gson = new Gson();
-        try (FileReader reader = new FileReader(filePath)) {
-            Type listType = new TypeToken<ArrayList<Vehicle>>(){}.getType();
-            List<Vehicle> savedData = gson.fromJson(reader, listType);
-
-            if (savedData != null) {
-                this.vehicleList = savedData;
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split("\\|");
+                if (parts.length >= 6) {
+                    try {
+                        int year = Integer.parseInt(parts[3]);
+                        int mileage = Integer.parseInt(parts[4]);
+                        Vehicle v = new Vehicle(parts[0], parts[1], parts[2], year, mileage, parts[5]);
+                        vehicleList.add(v);
+                    } catch (NumberFormatException e) {
+                        System.out.println("Skipping invalid vehicle line: " + line);
+                    }
+                }
             }
         } catch (IOException e) {
-            System.out.println("Could not read from vehicles.json!");
+            System.err.println("Could not read from vehicles.txt: " + e.getMessage());
         }
     }
 
-    // --- ACTION 1: CREATE (Add a new vehicle) ---
     public void addVehicle(Vehicle newVehicle) {
         vehicleList.add(newVehicle);
         saveToFile();
     }
 
-    // --- ACTION 2A: READ ALL (For the Shop Boss) ---
     public List<Vehicle> getAllVehicles() {
         return vehicleList;
     }
 
-    // --- ACTION 2B: READ BY OWNER (For the specific Customer) ---
     public List<Vehicle> getVehiclesByOwner(String username) {
         List<Vehicle> customerCars = new ArrayList<>();
         for (Vehicle v : vehicleList) {
@@ -67,7 +69,6 @@ public class VehicleManager {
         return customerCars;
     }
 
-    // --- ACTION 3: UPDATE (Change mileage or details) ---
     public void updateVehicle(String targetPlate, String make, String model, int year, int mileage) {
         for (Vehicle v : vehicleList) {
             if (v.getLicensePlate().equals(targetPlate)) {
@@ -76,15 +77,22 @@ public class VehicleManager {
                 v.setYear(year);
                 v.setMileage(mileage);
                 saveToFile();
-                return; // Stop looking once we find and update it
+                return;
             }
         }
     }
 
-    // --- ACTION 4: DELETE (Remove a vehicle) ---
     public void deleteVehicle(String targetPlate) {
-        // We look for the car with the matching license plate and remove it
         vehicleList.removeIf(v -> v.getLicensePlate().equals(targetPlate));
         saveToFile();
+    }
+
+    public boolean vehicleExists(String targetPlate) {
+        for (Vehicle v : vehicleList) {
+            if (v.getLicensePlate().equalsIgnoreCase(targetPlate)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

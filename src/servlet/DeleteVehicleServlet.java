@@ -11,44 +11,38 @@ import java.io.IOException;
 @WebServlet("/DeleteVehicleServlet")
 public class DeleteVehicleServlet extends HttpServlet {
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession(false);
-        if (session == null) {
+        if (session == null || session.getAttribute("username") == null) {
             response.sendRedirect("login.jsp");
             return;
         }
 
-        String username = (String) session.getAttribute("username");
-        String role = (String) session.getAttribute("userRole");
-        if (!"customer".equals(role)) {
-            // Only customers should be managing vehicles this way in the new flow
-            response.sendRedirect("login.jsp");
-            return;
-        }
-
-        String targetPlate = request.getParameter("plate");
+        String sessionUser = (String) session.getAttribute("username");
+        String targetPlate = request.getParameter("licensePlate");
 
         if (targetPlate != null && !targetPlate.trim().isEmpty()) {
-            VehicleManager vManager = (VehicleManager) session.getAttribute("vehicleManager");
-            if (vManager == null) {
-                vManager = new VehicleManager();
-                session.setAttribute("vehicleManager", vManager);
-            }
-            
-            // Add extra security step here: verify the target vehicle belongs to the exact session customer!
-            boolean canDelete = false;
+            VehicleManager vManager = new VehicleManager();
+
+            // Security: verify the vehicle belongs to this customer
+            boolean isOwner = false;
             for (Vehicle v : vManager.getAllVehicles()) {
-                if (v.getLicensePlate().equals(targetPlate) && v.getOwnerUsername().equals(username)) {
-                    canDelete = true;
+                if (v.getLicensePlate().equals(targetPlate) && v.getOwnerUsername().equals(sessionUser)) {
+                    isOwner = true;
                     break;
                 }
             }
 
-            if (canDelete) {
-                vManager.deleteVehicle(targetPlate);
+            if (!isOwner) {
+                response.sendRedirect("customer_dashboard.jsp?error=unauthorized");
+                return;
             }
+
+            vManager.deleteVehicle(targetPlate);
+            response.sendRedirect("customer_dashboard.jsp?vehicleDeleted=true");
+        } else {
+            response.sendRedirect("customer_dashboard.jsp");
         }
-        
-        response.sendRedirect("customer_vehicles.jsp?success=deleted");
     }
 }

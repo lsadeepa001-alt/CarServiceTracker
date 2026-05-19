@@ -1,15 +1,12 @@
 package model;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import java.io.*;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
 public class InventoryManager {
     private List<InventoryItem> inventoryList;
-    private final String FILE_PATH = "inventory.json";
+    private final String FILE_PATH = Main.getFilePath("inventory.txt");
 
     public InventoryManager() {
         this.inventoryList = new ArrayList<>();
@@ -69,43 +66,80 @@ public class InventoryManager {
 
     // 3. DELETE AN ITEM
     public void deleteItem(String targetId) {
-        inventoryList.removeIf(item -> item.getItemId().equals(targetId));
+        inventoryList.removeIf(item -> item.getItemId().trim().equalsIgnoreCase(targetId.trim()));
         saveToFile();
     }
 
-    // 4. UPDATE AN ITEM'S STOCK OR PRICE (NEWLY ADDED!)
-    public void updateItem(String targetId, int newQuantity, double newPrice) {
+    // 4. FIND AN ITEM BY ID
+    public InventoryItem getItemById(String targetId) {
         for (InventoryItem item : inventoryList) {
-            if (item.getItemId().equals(targetId)) {
+            if (item.getItemId().trim().equalsIgnoreCase(targetId.trim())) {
+                return item;
+            }
+        }
+        return null;
+    }
+
+    // 5. UPDATE AN ITEM'S STOCK OR PRICE (NEWLY ADDED!)
+    public void updateItem(String targetId, String itemName, String category, int newQuantity, double newPrice, String iconName, String applicableService) {
+        for (InventoryItem item : inventoryList) {
+            if (item.getItemId().trim().equalsIgnoreCase(targetId.trim())) {
+                if (itemName != null) item.setItemName(itemName);
+                if (category != null) item.setCategory(category);
                 item.setQuantity(newQuantity);
                 item.setPrice(newPrice);
+                if (iconName != null) item.setIconName(iconName);
+                if (applicableService != null) item.setApplicableService(applicableService);
                 break; // Stop searching once we find it!
             }
         }
-        saveToFile(); // Save the new numbers to the JSON file
+        saveToFile(); // Save the new numbers to the TXT file
     }
 
-    // --- MAGIC FILE SAVING ---
+    // --- SAVE TO FILE ---
+    // Format: itemId|itemName|category|quantity|price|iconName|applicableService
     public void saveToFile() {
-        try (Writer writer = new FileWriter(FILE_PATH)) {
-            Gson gson = new Gson();
-            gson.toJson(inventoryList, writer);
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH));
+            for (InventoryItem item : inventoryList) {
+                writer.write(item.getItemId() + "|" + item.getItemName() + "|" + item.getCategory() + "|" +
+                             item.getQuantity() + "|" + item.getPrice() + "|" + item.getIconName() + "|" +
+                             item.getApplicableService());
+                writer.newLine();
+            }
+            writer.flush();
+            writer.close();
         } catch (IOException e) {
             System.out.println("Error saving inventory: " + e.getMessage());
         }
     }
 
-    // --- MAGIC FILE LOADING ---
+    // --- LOAD FROM FILE ---
     public void loadFromFile() {
-        try (Reader reader = new FileReader(FILE_PATH)) {
-            Gson gson = new Gson();
-            Type listType = new TypeToken<ArrayList<InventoryItem>>(){}.getType();
-            List<InventoryItem> loaded = gson.fromJson(reader, listType);
-            if (loaded != null) {
-                this.inventoryList = loaded;
-            }
-        } catch (FileNotFoundException e) {
+        File file = new File(FILE_PATH);
+        if (!file.exists()) {
             System.out.println("No inventory file found. Starting fresh!");
+            return;
+        }
+
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+            String line;
+            this.inventoryList = new ArrayList<>();
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split("\\|");
+                if (parts.length >= 7) {
+                    try {
+                        int quantity = Integer.parseInt(parts[3]);
+                        double price = Double.parseDouble(parts[4]);
+                        InventoryItem item = new InventoryItem(parts[0], parts[1], parts[2], quantity, price, parts[5], parts[6]);
+                        inventoryList.add(item);
+                    } catch (NumberFormatException e) {
+                        System.out.println("Skipping invalid inventory line: " + line);
+                    }
+                }
+            }
+            reader.close();
         } catch (IOException e) {
             System.out.println("Error loading inventory: " + e.getMessage());
         }

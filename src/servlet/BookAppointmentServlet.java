@@ -18,7 +18,7 @@ public class BookAppointmentServlet extends HttpServlet {
         String username = (String) session.getAttribute("username");
 
         // Generate a random ID for the ticket (e.g., APP-16928374)
-        String appointmentId = "APP-" + System.currentTimeMillis() % 100000;
+        String appointmentId = "APP-" + java.util.UUID.randomUUID().toString().substring(0, 8).toUpperCase();
         String licensePlate = request.getParameter("licensePlate");
         String date = request.getParameter("preferredDate");
         String time = request.getParameter("preferredTime");

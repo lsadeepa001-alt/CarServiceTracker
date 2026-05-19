@@ -25,7 +25,7 @@ public class DeleteServiceServlet extends HttpServlet {
 
         // 3. If the list exists, delete the specific record
         if (list != null && date != null && type != null) {
-            list.deleteRecord(date, type);
+            list.deleteRecord(date, type, plate);
 
             // ---> THIS IS THE NEW MAGIC MEMORY LINE! <---
             // This saves the train (with the deleted car removed) to your services.json file permanently.

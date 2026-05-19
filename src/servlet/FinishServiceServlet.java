@@ -33,7 +33,7 @@ public class FinishServiceServlet extends HttpServlet {
                 if (consumedQty > 0) {
                     // Update the remaining physical inventory natively
                     int newRemainingStock = part.getQuantity() - consumedQty;
-                    im.updateItem(part.getItemId(), newRemainingStock, part.getPrice());
+                    im.updateItem(part.getItemId(), part.getItemName(), part.getCategory(), newRemainingStock, part.getPrice(), part.getIconName(), part.getApplicableService());
                     
                     partsCost += (consumedQty * part.getPrice());
                     partsConsumed.append(consumedQty).append("x ").append(part.getItemName()).append(", ");
@@ -47,14 +47,11 @@ public class FinishServiceServlet extends HttpServlet {
             partsDescr = partsDescr.substring(0, partsDescr.length() - 2);
         }
 
-        // 2. Query the dynamically registered labor cost for this exact abstract service!
-        ServiceTypeManager stm = new ServiceTypeManager();
+        // 2. Read the directly inputted labor cost from the form!
         double laborCost = 0.0;
-        for (ServiceType st : stm.getAllServices()) {
-            if (st.getServiceName().equals(serviceName)) {
-                laborCost = st.getDefaultBasePrice();
-                break;
-            }
+        String laborCostStr = request.getParameter("laborCost");
+        if (laborCostStr != null && !laborCostStr.trim().isEmpty()) {
+            laborCost = Double.parseDouble(laborCostStr);
         }
 
         // 3. Generate the Invoice (Random ID formulation)
@@ -69,7 +66,15 @@ public class FinishServiceServlet extends HttpServlet {
         BillingManager bm = new BillingManager();
         bm.generateInvoice(newBill);
 
-        // 4. Migrate the vehicle out of the active garage queue inherently pushing it to Completed status
+        // 4. Create a Service History record for the customer's dashboard
+        String today = new java.text.SimpleDateFormat("yyyy-MM-dd").format(new java.util.Date());
+        ServiceRecord record = new ServiceRecord(today, serviceName, partsCost + laborCost, licensePlate, partsDescr.isEmpty() ? "No physical parts recorded." : partsDescr);
+        ServiceHistoryList historyList = new ServiceHistoryList();
+        historyList.loadFromFile();
+        historyList.addRecord(record);
+        historyList.saveToFile();
+
+        // 5. Migrate the vehicle out of the active garage queue inherently pushing it to Completed status
         BookingManager bookingManager = new BookingManager();
         bookingManager.moveFromGarageToCompleted(appId);
 

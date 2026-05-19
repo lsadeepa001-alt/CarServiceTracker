@@ -16,27 +16,39 @@ public class RegisterServlet extends HttpServlet {
             return;
         }
 
-        // 1. Grab the data from the website boxes (Now we grab 3 things!)
+        // 1. Grab the data from the form
         String user = request.getParameter("username");
         String pass = request.getParameter("password");
-
-        // <-- WE PICK UP THE NEW SECRET BADGE HERE! -->
         String badge = request.getParameter("role");
+        String name = request.getParameter("name");
+        String sq = request.getParameter("securityQuestion");
+        String sa = request.getParameter("securityAnswer");
 
-        // 2. Box them up into our new User blueprint
+        // Validate inputs
+        if (user == null || user.trim().isEmpty() || pass == null || pass.trim().isEmpty() || badge == null || sq == null || sa == null) {
+            response.sendRedirect("manage_users.jsp?error=empty");
+            return;
+        }
+
+        if (name == null || name.trim().isEmpty()) name = user;
+
+        // 2. Box them up into the right User type
         UserManager manager = new UserManager();
 
-        // We give the new User their name, password, AND their badge
-        User newUser = new User(user, pass, badge);
+        AbstractUser newUser;
+        if ("admin".equals(badge)) {
+            newUser = new AdminUser(user, pass, name, sq, sa);
+        } else {
+            newUser = new CustomerUser(user, pass, name, sq, sa);
+        }
 
-        // Save them to the text file!
+        // 3. Save to file
         boolean success = manager.registerUser(newUser);
 
         if (success) {
-            // 3. Send the admin back to the user management page
-            response.sendRedirect("manage-users.jsp?success=registered");
+            response.sendRedirect("manage_users.jsp?success=created");
         } else {
-            response.sendRedirect("register.jsp?error=exists");
+            response.sendRedirect("manage_users.jsp?error=exists");
         }
     }
 }

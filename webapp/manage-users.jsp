@@ -1,5 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page import="model.UserManager, model.User, java.util.List" %>
+<%@ page import="model.UserManager, model.AbstractUser, java.util.List" %>
 <%@ include file="navbar.jsp" %>
 
 <%
@@ -17,6 +17,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Users - SwiftDrive</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -36,7 +37,7 @@
         </a>
     </div>
 
-    <div class="bg-white shadow-xl rounded-2xl border border-gray-100 overflow-hidden">
+    <div class="bg-white shadow-xl rounded-2xl border border-gray-100 overflow-hidden overflow-x-auto w-full">
         <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-indigo-50">
                 <tr>
@@ -49,9 +50,9 @@
             <tbody class="divide-y divide-gray-200 bg-white">
                 <%
                     UserManager uManager = new UserManager();
-                    List<User> allUsers = uManager.getAllUsers();
+                    List<AbstractUser> allUsers = uManager.getAllUsers();
 
-                    for (User u : allUsers) {
+                    for (AbstractUser u : allUsers) {
                 %>
                         <tr class="hover:bg-gray-50">
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-indigo-600">

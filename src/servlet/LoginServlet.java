@@ -12,30 +12,38 @@ public class LoginServlet extends HttpServlet {
         String user = request.getParameter("username");
         String pass = request.getParameter("password");
 
+        if (user == null || user.trim().isEmpty() || pass == null || pass.trim().isEmpty()) {
+            response.sendRedirect("login.jsp?error=empty");
+            return;
+        }
+
         UserManager manager = new UserManager();
 
-        // 1. Ask the UserManager for the secret badge!
-        String badge = manager.loginUser(user, pass);
+        AbstractUser loggedInUser = manager.loginUser(user, pass);
 
-        // 2. Check which badge they have
-        if (badge.equals("admin")) {
-            // THEY ARE THE BOSS!
+        if (loggedInUser != null) {
             HttpSession session = request.getSession();
-            session.setAttribute("username", user);  // FIXED: Changed from "loggedInUser"
-            session.setAttribute("userRole", badge);
+            session.setAttribute("username", loggedInUser.getUsername());
+            session.setAttribute("userRole", loggedInUser.getRole());
+            session.setAttribute("userObject", loggedInUser);
 
-            // Send bosses to the big dashboard
-            response.sendRedirect("dashboard.jsp");
+            // --- REMEMBER ME LOGIC ---
+            String remember = request.getParameter("remember");
+            Cookie userCookie = new Cookie("remembered_user", loggedInUser.getUsername());
+            if (remember != null && remember.equals("on")) {
+                userCookie.setMaxAge(60 * 60 * 24 * 30); // 30 days
+            } else {
+                userCookie.setMaxAge(0); // Delete cookie
+            }
+            response.addCookie(userCookie);
+            // -------------------------
 
-        } else if (badge.equals("customer")) {
-            // THEY ARE A NORMAL CUSTOMER!
-            HttpSession session = request.getSession();
-            session.setAttribute("username", user);  // FIXED: Changed from "loggedInUser"
-            session.setAttribute("userRole", badge);
+            if (!loggedInUser.isActive()) {
+                response.sendRedirect("login.jsp?error=deactivated");
+                return;
+            }
 
-            // Send customers to their dashboard
-            response.sendRedirect("customer_dashboard.jsp");
-
+            response.sendRedirect(loggedInUser.getDashboardPath());
         } else {
             // FAIL! Wrong password or username
             response.sendRedirect("login.jsp?error=invalid");

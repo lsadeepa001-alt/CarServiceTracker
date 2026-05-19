@@ -19,12 +19,19 @@ public class AddServiceTypeServlet extends HttpServlet {
             return;
         }
 
-        String serviceName = request.getParameter("serviceName");
-        double basePrice = Double.parseDouble(request.getParameter("basePrice"));
+        String action = request.getParameter("action");
+        String serviceName = request.getParameter("name");
+        String category = request.getParameter("category");
+        double basePrice = Double.parseDouble(request.getParameter("price"));
 
         ServiceTypeManager stm = new ServiceTypeManager();
-        stm.addServiceType(new ServiceType(serviceName, basePrice));
-
-        response.sendRedirect("manage_services.jsp?success=added");
+        
+        if ("edit".equals(action)) {
+            stm.updateServiceType(serviceName, serviceName, category, basePrice);
+            response.sendRedirect("manage_services.jsp?success=updated");
+        } else {
+            stm.addServiceType(new ServiceType(serviceName, category, basePrice));
+            response.sendRedirect("manage_services.jsp?success=added");
+        }
     }
 }

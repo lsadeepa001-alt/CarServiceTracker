@@ -14,16 +14,44 @@ public class UpdateInventoryServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        // 1. Catch the target ID and the new numbers
+        // 1. Catch the target ID and all potential fields
         String targetId = request.getParameter("itemId");
-        int newQuantity = Integer.parseInt(request.getParameter("newQuantity"));
-        double newPrice = Double.parseDouble(request.getParameter("newPrice"));
+        String itemName = request.getParameter("itemName");
+        String category = request.getParameter("category");
+        String iconName = request.getParameter("iconName");
+        String applicableService = request.getParameter("applicableService");
+        
+        String qtyStr = request.getParameter("newQuantity");
+        if (qtyStr == null) qtyStr = request.getParameter("quantity");
+        
+        String priceStr = request.getParameter("newPrice");
+        if (priceStr == null) priceStr = request.getParameter("price");
 
-        // 2. Hand the updates to the manager
         InventoryManager manager = new InventoryManager();
-        manager.updateItem(targetId, newQuantity, newPrice);
+        InventoryItem existingItem = manager.getItemById(targetId);
 
-        // 3. Go back to the dashboard to see the changes instantly!
-        response.sendRedirect("inventory.jsp");
+        if (existingItem != null) {
+            // Use provided values or fall back to existing ones
+            int newQuantity = (qtyStr != null) ? Integer.parseInt(qtyStr) : existingItem.getQuantity();
+            double newPrice = (priceStr != null) ? Double.parseDouble(priceStr) : existingItem.getPrice();
+            
+            if (itemName == null) itemName = existingItem.getItemName();
+            if (category == null) category = existingItem.getCategory();
+            if (iconName == null) iconName = existingItem.getIconName();
+            if (applicableService == null) applicableService = existingItem.getApplicableService();
+
+            // 2. Hand the updates to the manager
+            manager.updateItem(targetId, itemName, category, newQuantity, newPrice, iconName, applicableService);
+        }
+
+        // 3. Detect AJAX calls (from inline +/- buttons) vs form submissions
+        String fetchDest = request.getHeader("Sec-Fetch-Dest");
+        if ("empty".equals(fetchDest)) {
+            // AJAX/fetch call - just respond OK, no redirect
+            response.setStatus(HttpServletResponse.SC_OK);
+        } else {
+            // Standard form submission - redirect back
+            response.sendRedirect("inventory.jsp");
+        }
     }
 }

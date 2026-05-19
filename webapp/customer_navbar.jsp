@@ -1,40 +1,58 @@
-<nav class="bg-indigo-600 shadow-md fixed top-0 z-50 w-full">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
-    <div class="flex items-center space-x-4">
-      <button id="cust-mobile-menu-btn" class="text-white md:hidden focus:outline-none hover:text-indigo-200">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-        </svg>
+<%@ include file="theme_script.jsp" %>
+<nav class="nav-glass fixed top-0 w-full z-[100] transition-all duration-300">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-20">
+    <!-- Branding Section -->
+    <div class="flex items-center gap-8">
+      <button id="cust-mobile-menu-btn" class="text-slate-600 dark:text-slate-400 md:hidden focus:outline-none hover:text-indigo-600 transition-colors">
+        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
       </button>
-      <span class="text-white font-bold text-xl tracking-wider">SwiftDrive Services</span>
+      <a href="customer_dashboard.jsp" class="flex items-center gap-3 group">
+        <div class="w-10 h-10 bg-indigo-600 rounded-2xl flex items-center justify-center shadow-xl shadow-indigo-200 dark:shadow-none group-hover:scale-110 transition-transform border-b-4 border-indigo-800">
+          <i class="fa-solid fa-car-side text-white text-sm"></i>
+        </div>
+        <span class="branding-text text-xl font-black tracking-tighter">SwiftDrive</span>
+      </a>
     </div>
 
-    <div id="cust-desktop-menu" class="hidden md:flex space-x-2 items-center">
-      <!-- Injected by script -->
+    <!-- Desktop Navigation -->
+    <div id="cust-desktop-menu" class="hidden md:flex items-center gap-2">
+      <!-- Injected by script with enhanced contrast -->
     </div>
 
-    <div class="flex items-center pl-2">
-       <a href="LogoutServlet" onclick="confirmLogout(event)" class="text-white bg-indigo-500 py-1.5 px-4 rounded hover:bg-indigo-700 shadow-inner font-bold text-sm transition-colors duration-200">Sign Out</a>
+    <!-- System Controls -->
+    <div class="flex items-center gap-4">
+      <button onclick="toggleTheme()" class="w-11 h-11 rounded-2xl bg-white dark:bg-slate-900 text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 flex items-center justify-center transition-all border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-md active:scale-90 overflow-hidden">
+        <i class="fa-solid fa-moon show-light text-lg"></i>
+        <i class="fa-solid fa-sun show-dark text-lg"></i>
+      </button>
+      <div class="h-8 w-[1px] bg-slate-100 dark:bg-slate-800 hidden sm:block"></div>
+      <a href="LogoutServlet" onclick="confirmLogout(event)" class="hidden md:inline-block bg-slate-900 dark:bg-white text-white dark:text-slate-950 text-[10px] font-black uppercase tracking-widest px-6 py-3 rounded-2xl transition-all shadow-xl shadow-slate-200/50 dark:shadow-none hover:translate-y-[-2px] active:scale-95">Logout</a>
     </div>
-  </div>
-
-  <div id="cust-mobile-menu" class="hidden bg-indigo-700 px-4 py-3 shadow-inner md:hidden">
-    <div class="flex flex-col space-y-2" id="cust-mobile-menu-list">
-      <!-- Injected by script -->
     </div>
   </div>
 </nav>
+
+<!-- Mobile Navigation -->
+<div id="cust-mobile-menu" class="hidden bg-white dark:bg-slate-950 border-t border-slate-100 dark:border-slate-800 px-6 py-6 md:hidden animate-slide-up flex flex-col gap-4 shadow-xl">
+  <div class="flex flex-col gap-3" id="cust-mobile-menu-list"></div>
+  <div class="pt-4 border-t border-slate-100 dark:border-slate-800">
+    <a href="LogoutServlet" onclick="confirmLogout(event)" class="w-full bg-slate-900 dark:bg-white text-white dark:text-slate-950 text-[10px] font-black uppercase tracking-widest px-6 py-4 rounded-2xl transition-all shadow-xl shadow-slate-200/50 dark:shadow-none hover:translate-y-[-2px] active:scale-95 flex items-center justify-center gap-2">
+      <i class="fa-solid fa-right-from-bracket"></i> Logout
+    </a>
+  </div>
+</div>
 
 <script>
   const custTabs = [
     { name: 'Dashboard', link: 'customer_dashboard.jsp', icon: 'fa-table-columns' },
     { name: 'My Garage', link: 'customer_vehicles.jsp', icon: 'fa-warehouse' },
-    { name: 'Appointments', link: 'book_appointment.jsp', icon: 'fa-calendar-check' }
+    { name: 'Book Service', link: 'book_appointment.jsp', icon: 'fa-calendar-plus' },
+    { name: 'Reviews', link: 'reviews.jsp', icon: 'fa-star' }
   ];
 
   const cDesktopMenu = document.getElementById('cust-desktop-menu');
   const cMobileMenuList = document.getElementById('cust-mobile-menu-list');
-  const cCurrentPage = window.location.pathname.split('/').pop();
+  const cCurrentPage = window.location.pathname.split('/').pop() || 'customer_dashboard.jsp';
 
   function createCustomerTabs() {
     cDesktopMenu.innerHTML = '';
@@ -43,34 +61,33 @@
     custTabs.forEach(tab => {
       const isActive = cCurrentPage === tab.link;
 
-      // Desktop
+      // Desktop Node
       const dTab = document.createElement('a');
       dTab.href = tab.link;
       dTab.className = isActive 
-        ? 'text-white bg-indigo-800 px-4 py-2 rounded-lg shadow-inner transition-colors duration-300 text-sm font-semibold flex items-center gap-2' 
-        : 'text-indigo-100 hover:text-white hover:bg-indigo-500 px-4 py-2 rounded-lg transition-colors duration-300 text-sm font-medium flex items-center gap-2';
-      dTab.innerHTML = '<i class="fa-solid ' + tab.icon + '"></i> ' + tab.name;
+        ? 'active-tab px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest flex items-center gap-3 transition-all' 
+        : 'text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-50 dark:hover:bg-slate-900/50 px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest flex items-center gap-3 transition-all';
+      dTab.innerHTML = `<i class="fa-solid ${tab.icon} text-xs"></i>` + tab.name;
       cDesktopMenu.appendChild(dTab);
 
-      // Mobile
+      // Mobile Node
       const mTab = document.createElement('a');
       mTab.href = tab.link;
       mTab.className = isActive 
-        ? 'text-white bg-indigo-800 px-3 py-2 rounded-md transition-colors duration-300 block font-bold text-sm' 
-        : 'text-indigo-200 hover:text-white hover:bg-indigo-500 px-3 py-2 rounded-md transition-colors duration-300 block text-sm';
-      mTab.innerHTML = '<i class="fa-solid ' + tab.icon + ' w-5"></i> ' + tab.name;
+        ? 'bg-indigo-600 text-white px-6 py-4 rounded-2xl text-xs font-black uppercase tracking-widest flex items-center gap-4 shadow-xl shadow-indigo-100 dark:shadow-none' 
+        : 'text-slate-500 dark:text-slate-400 px-6 py-4 rounded-2xl text-xs font-black uppercase tracking-widest flex items-center gap-4 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors';
+      mTab.innerHTML = `<i class="fa-solid ${tab.icon} w-6 text-sm"></i>` + tab.name;
       cMobileMenuList.appendChild(mTab);
     });
   }
 
   createCustomerTabs();
-
   const cBtn = document.getElementById('cust-mobile-menu-btn');
   const cMobileMenu = document.getElementById('cust-mobile-menu');
+  if (cBtn) cBtn.addEventListener('click', () => cMobileMenu.classList.toggle('hidden'));
   
-  if (cBtn) {
-    cBtn.addEventListener('click', () => {
-      cMobileMenu.classList.toggle('hidden');
-    });
+  function confirmLogout(e) {
+    if(!confirm("Are you sure you want to logout?")) e.preventDefault();
   }
 </script>
+<%@ include file="logout_script.jsp" %>

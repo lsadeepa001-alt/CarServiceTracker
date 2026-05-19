@@ -12,6 +12,8 @@ public class Invoice {
     private double totalAmount;
     private String dateIssued;
     private String status; // "UNPAID" or "PAID"
+    private String voidedDate;
+    private String voidReason;
 
     // Empty constructor for JSON
     public Invoice() {}
@@ -42,7 +44,15 @@ public class Invoice {
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
 
+    public String getVoidedDate() { return voidedDate; }
+    public void setVoidedDate(String voidedDate) { this.voidedDate = voidedDate; }
+
+    public String getVoidReason() { return voidReason; }
+    public void setVoidReason(String voidReason) { this.voidReason = voidReason; }
+
     public void setDateIssued(String date) { this.dateIssued = date; }
     public void setServiceDescription(String desc) { this.serviceDescription = desc; }
     public void setTotalAmount(double amount) { this.totalAmount = amount; }
+    public void setPartsCost(double cost) { this.partsCost = cost; }
+    public void setLaborCost(double cost) { this.laborCost = cost; }
 }

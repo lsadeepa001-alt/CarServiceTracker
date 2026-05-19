@@ -12,7 +12,15 @@ public class DeleteUserServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        processRequest(request, response);
+    }
 
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        processRequest(request, response);
+    }
+
+    private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
         // 1. Find out which username the boss clicked "Delete" on
         String targetUsername = request.getParameter("username");
 
@@ -22,7 +30,7 @@ public class DeleteUserServlet extends HttpServlet {
             manager.deleteUser(targetUsername);
         }
 
-        // 3. Send the boss back to the table to see the updated list
-        response.sendRedirect("manage-users.jsp");
+        // 3. Send the boss back to the updated table
+        response.sendRedirect("manage_users.jsp?success=deleted");
     }
 }

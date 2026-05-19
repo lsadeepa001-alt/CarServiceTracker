@@ -32,7 +32,7 @@ public class AddInventoryServlet extends HttpServlet {
         InventoryManager manager = new InventoryManager();
         manager.addItem(newItem);
 
-        // 4. SEND THE BOSS BACK TO THE DASHBOARD
-        response.sendRedirect("inventory.jsp");
+        // 4. SEND THE BOSS BACK TO THE DASHBOARD with success toast
+        response.sendRedirect("inventory.jsp?addSuccess=true");
     }
 }

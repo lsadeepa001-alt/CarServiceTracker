@@ -1,0 +1,5 @@
+CBA-1234|Honda|Vesel|2017|69000|sahab
+CBN-1872|Mitsubishi|103|1990|134000|Kasun@123
+DCC-1546|Nissan|sunny|2003|45670|sahab
+CPR-4567|Bajaj|corolla|2023|560000|Kavi@123
+QC-6754|toyota|valley|2003|87600|WALKIN_sasanga
